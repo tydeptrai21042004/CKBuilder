@@ -1,0 +1,10 @@
+{
+  "credentialId": "CKB-DEGREE-2026-0001",
+  "recipientLockHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "studentId": "PRIVATE-STUDENT-2026-001",
+  "identitySalt": "demo-only-random-salt-change-me",
+  "degreeTitle": "Bachelor of Computer Science",
+  "fieldOfStudy": "Computer Science",
+  "classification": "Distinction",
+  "issuedAt": "2026-07-14"
+}

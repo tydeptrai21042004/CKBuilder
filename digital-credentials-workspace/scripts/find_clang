@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Compatibility helper retained for generated-template commands.
+# The credential-revocation contract itself no longer depends on this script.
+set -euo pipefail
+
+if [[ -n "${CLANG:-}" ]] && command -v "$CLANG" >/dev/null 2>&1; then
+  command -v "$CLANG"
+  exit 0
+fi
+
+for candidate in clang clang-20 clang-19 clang-18 clang-17 clang-16 clang-15 clang-14; do
+  if command -v "$candidate" >/dev/null 2>&1; then
+    command -v "$candidate"
+    exit 0
+  fi
+done
+
+if command -v cc >/dev/null 2>&1; then
+  command -v cc
+  exit 0
+fi
+
+printf 'Cannot find a C compiler. Install build-essential.\n' >&2
+exit 1

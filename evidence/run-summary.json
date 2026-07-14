@@ -1,0 +1,23 @@
+{
+  "runDateUtc": "2026-07-14T16:07:32.144Z",
+  "network": "local OffCKB devnet only",
+  "result": "SUCCESS",
+  "credentialId": "CKB-DEGREE-LOCAL-20260714230026",
+  "issuerAddress": "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvwg2cen8extgq8s5puft8vf40px3f599cytcyd8",
+  "issuerLockScriptHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+  "credentialHash": "0x8476eb29d2dea9e95443df3b9d39b2b8720238503be4a5f4d8581a5fff44c7f4",
+  "contractCodeHash": "0x61d275873bc434e8c84cd9556e6e13feb879b8be2878f16fa204575544ce50d0",
+  "transactions": {
+    "contractDeployment": "0x59bbd2c35c2127be21489b9f0f85ff6e8a3cb50d350aa85caac39d0d6d2368cf",
+    "activeRecord": "0xf87a22dc73eba45646199263d52e8708f5de6c00d1b4bd6f546c867b36ea5637",
+    "revokedRecord": "0x19b80e7e307580b45a19269c48c2bf9ee19e5931133efd212c9dac00658ecf5a"
+  },
+  "tests": {
+    "node": {"passed": 11, "failed": 0},
+    "rustUnit": {"passed": 2, "failed": 0},
+    "rustIntegration": {"passed": 11, "failed": 0}
+  },
+  "finalOnChainStatus": "REVOKED",
+  "contractBinarySha256": "2fb86c4892f0308e34da1632b5fc263a570fb0ab1d2f0284b0d2cb417a7cf46a",
+  "scope": "Evidence values are from an ephemeral local OffCKB chain and are not testnet or mainnet records."
+}

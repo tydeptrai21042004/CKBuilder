@@ -1,0 +1,13 @@
+[package]
+name = "credential-revocation"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "CKB type Script enforcing issuer-authorized, irreversible academic credential revocation."
+
+[dependencies]
+ckb-std = "=0.17.2"
+
+[features]
+library = []
+native-simulator = ["library", "ckb-std/native-simulator"]
