@@ -1,0 +1,12 @@
+{
+  "cell_recipes": [
+    {
+      "name": "credential-revocation",
+      "tx_hash": "0x6c4be1ad765bf73df3ea12158e1843a0ed4090bedc5170d03647a09a335b97c4",
+      "index": 0,
+      "occupied_capacity": 4484800000000,
+      "data_hash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6"
+    }
+  ],
+  "dep_group_recipes": []
+}

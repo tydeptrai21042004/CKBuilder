@@ -1,0 +1,219 @@
+{
+  "schema": "ckb-degree-public-verification-proof/v2",
+  "proofVersion": "2.1.0",
+  "generatedAt": "2026-07-22T14:55:57.741Z",
+  "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+  "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+  "network": "devnet",
+  "rpcUrl": "http://127.0.0.1:28114/",
+  "readOnly": true,
+  "privateKeyRequired": false,
+  "formats": {
+    "cellData": "ckb-degree-credential-cell/v1",
+    "publicProof": "ckb-degree-public-verification-proof/v2",
+    "testVectors": "ckb-degree-cell-test-vectors/v1"
+  },
+  "outcome": "REVOKED",
+  "usableAsActiveCredential": false,
+  "offChain": {
+    "status": "REVOKED",
+    "valid": false,
+    "integrityValid": true,
+    "complete": true,
+    "documentVerified": true,
+    "credential": {
+      "schema": "ckb-degree-credential/v1",
+      "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+      "issuer": {
+        "issuerId": "0xb46d8cc27214920ee0c75e47d490258a9b0c8ff50f64c630e3623dea606d50dc",
+        "name": "Example University",
+        "lockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+      },
+      "subject": {
+        "recipientLockHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+        "identityCommitment": "0x3de0f6a88dfb3f2047be9e2081fd7310d8d029f889495ce38c909764a691c5b5"
+      },
+      "award": {
+        "title": "Bachelor of Computer Science",
+        "field": "Computer Science",
+        "classification": "Distinction",
+        "issuedAt": "2026-07-14"
+      },
+      "document": {
+        "hashAlgorithm": "sha256",
+        "hash": "0x046d1847d32869973ed9a018ea4c48f1f2d11e88a29ff608cc8087f903719bcd",
+        "fileName": "certificate-original.pdf"
+      },
+      "createdAt": "2026-07-14T00:00:00.000Z"
+    },
+    "checks": [
+      {
+        "name": "credential_exists",
+        "ok": true,
+        "message": "Credential record exists."
+      },
+      {
+        "name": "credential_binding",
+        "ok": true,
+        "message": "Stored credential payload is bound to the requested credentialId."
+      },
+      {
+        "name": "schema",
+        "ok": true,
+        "message": "Credential schema and field encodings are valid."
+      },
+      {
+        "name": "trusted_issuer",
+        "ok": true,
+        "message": "Issuer ID and lock hash are trusted."
+      },
+      {
+        "name": "issuer_key",
+        "ok": true,
+        "message": "Issuer public key matches issuerId."
+      },
+      {
+        "name": "credential_signature",
+        "ok": true,
+        "message": "Credential signature is valid."
+      },
+      {
+        "name": "document_hash",
+        "ok": true,
+        "message": "Uploaded document hash matches the credential."
+      },
+      {
+        "name": "revocation_schema",
+        "ok": true,
+        "message": "Revocation event schema is supported."
+      },
+      {
+        "name": "revocation_credential_binding",
+        "ok": true,
+        "message": "Revocation event is bound to this credential."
+      },
+      {
+        "name": "revocation_issuer_binding",
+        "ok": true,
+        "message": "Revocation event is bound to the credential issuer."
+      },
+      {
+        "name": "revocation_reason",
+        "ok": true,
+        "message": "Revocation reason is valid."
+      },
+      {
+        "name": "revocation_timestamp",
+        "ok": true,
+        "message": "Revocation timestamp is valid."
+      },
+      {
+        "name": "revocation_signature",
+        "ok": true,
+        "message": "Revocation event signature is valid."
+      },
+      {
+        "name": "revocation_status",
+        "ok": false,
+        "code": "CREDENTIAL_REVOKED",
+        "message": "Credential was revoked: Credential replaced after an administrative correction."
+      }
+    ]
+  },
+  "onChain": {
+    "found": true,
+    "status": "REVOKED",
+    "activeCount": 0,
+    "revokedCount": 1,
+    "invalidCount": 0,
+    "totalCount": 1,
+    "records": [
+      {
+        "outPoint": {
+          "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+          "index": 0
+        },
+        "record": {
+          "version": 1,
+          "status": 1,
+          "statusName": "REVOKED",
+          "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+          "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+          "reasonCode": 1,
+          "reasonName": "ADMINISTRATIVE_CORRECTION",
+          "revokedAt": "1784732122",
+          "revokedAtIso": "2026-07-22T14:55:22.000Z",
+          "canonical": true,
+          "errors": []
+        },
+        "errors": []
+      }
+    ],
+    "outPoint": {
+      "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+      "index": 0
+    },
+    "record": {
+      "version": 1,
+      "status": 1,
+      "statusName": "REVOKED",
+      "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+      "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+      "reasonCode": 1,
+      "reasonName": "ADMINISTRATIVE_CORRECTION",
+      "revokedAt": "1784732122",
+      "revokedAtIso": "2026-07-22T14:55:22.000Z",
+      "canonical": true,
+      "errors": []
+    },
+    "readOnly": true,
+    "network": "devnet",
+    "rpcUrl": "http://127.0.0.1:28114",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "stateConsistency": {
+    "consistent": true,
+    "code": "STATE_CONSISTENT",
+    "message": "Off-chain and live on-chain status both report REVOKED."
+  },
+  "history": {
+    "available": true,
+    "source": "OFFCKB_CHAIN_STATE_EVIDENCE",
+    "note": "Transaction history is loaded from the saved execution evidence; the current live Cell is checked independently through RPC.",
+    "steps": [
+      {
+        "state": "ACTIVE",
+        "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+        "outPoint": {
+          "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+          "index": 0
+        }
+      },
+      {
+        "state": "REVOKED",
+        "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+        "outPoint": {
+          "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+          "index": 0
+        },
+        "consumedActiveOutPoint": {
+          "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+          "index": 0
+        },
+        "reasonCode": 1,
+        "revokedAt": "1784732122"
+      }
+    ]
+  },
+  "limitations": [
+    "The Type Script enforces issuer-lock ownership and an irreversible ACTIVE to REVOKED transition for one Cell lineage.",
+    "Global uniqueness across newly created Cells with the same credential hash is not yet enforced.",
+    "Saved history evidence is supplementary; the live Cell status is the independently queried chain result."
+  ],
+  "proofDigest": "0xdfccadca6a43a5e6d39d24501ff842121bb0e6551585780f178be71e98fe717e"
+}

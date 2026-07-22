@@ -1,0 +1,147 @@
+{
+  "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+  "active": {
+    "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+    "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+    "status": "ACTIVE",
+    "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+    "outPoint": {
+      "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+      "index": 0
+    },
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "activeCheck": {
+    "found": true,
+    "status": "ACTIVE",
+    "activeCount": 1,
+    "revokedCount": 0,
+    "invalidCount": 0,
+    "totalCount": 1,
+    "records": [
+      {
+        "outPoint": {
+          "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+          "index": 0
+        },
+        "record": {
+          "version": 1,
+          "status": 0,
+          "statusName": "ACTIVE",
+          "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+          "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+          "reasonCode": 0,
+          "reasonName": "NONE",
+          "revokedAt": "0",
+          "revokedAtIso": null,
+          "canonical": true,
+          "errors": []
+        },
+        "errors": []
+      }
+    ],
+    "outPoint": {
+      "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+      "index": 0
+    },
+    "record": {
+      "version": 1,
+      "status": 0,
+      "statusName": "ACTIVE",
+      "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+      "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+      "reasonCode": 0,
+      "reasonName": "NONE",
+      "revokedAt": "0",
+      "revokedAtIso": null,
+      "canonical": true,
+      "errors": []
+    },
+    "readOnly": true,
+    "network": "devnet",
+    "rpcUrl": "http://127.0.0.1:28114",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "revocation": {
+    "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+    "status": "REVOKED",
+    "reasonCode": 1,
+    "revokedAt": "1784732122",
+    "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+    "outPoint": {
+      "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+      "index": 0
+    },
+    "spentActiveOutPoint": {
+      "txHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+      "index": 0
+    }
+  },
+  "finalCheck": {
+    "found": true,
+    "status": "REVOKED",
+    "activeCount": 0,
+    "revokedCount": 1,
+    "invalidCount": 0,
+    "totalCount": 1,
+    "records": [
+      {
+        "outPoint": {
+          "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+          "index": 0
+        },
+        "record": {
+          "version": 1,
+          "status": 1,
+          "statusName": "REVOKED",
+          "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+          "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+          "reasonCode": 1,
+          "reasonName": "ADMINISTRATIVE_CORRECTION",
+          "revokedAt": "1784732122",
+          "revokedAtIso": "2026-07-22T14:55:22.000Z",
+          "canonical": true,
+          "errors": []
+        },
+        "errors": []
+      }
+    ],
+    "outPoint": {
+      "txHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+      "index": 0
+    },
+    "record": {
+      "version": 1,
+      "status": 1,
+      "statusName": "REVOKED",
+      "credentialHash": "0x1bde24715836db6c4f462afa4b9144b693669480bd5fea3d5dc320c0c5b5a34c",
+      "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+      "reasonCode": 1,
+      "reasonName": "ADMINISTRATIVE_CORRECTION",
+      "revokedAt": "1784732122",
+      "revokedAtIso": "2026-07-22T14:55:22.000Z",
+      "canonical": true,
+      "errors": []
+    },
+    "readOnly": true,
+    "network": "devnet",
+    "rpcUrl": "http://127.0.0.1:28114",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "completedAt": "2026-07-22T14:55:39.039Z"
+}

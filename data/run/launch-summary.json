@@ -1,0 +1,23 @@
+{
+  "schema": "ckb-degree-local-launch/v1",
+  "generatedAt": "2026-07-22T14:55:58.434Z",
+  "network": "local-offckb-devnet",
+  "rpcUrl": "http://127.0.0.1:28114",
+  "inspectorUrl": "http://127.0.0.1:4173",
+  "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+  "walletSetup": "automatic-prefunded-offckb-development-account",
+  "privateKeyScope": "local-development-only",
+  "services": {
+    "offckbPidFile": "data/run/offckb.pid",
+    "inspectorPidFile": "data/run/inspector.pid"
+  },
+  "evidence": {
+    "chainState": "data/offckb-chain-state.json",
+    "deployment": "deployment/scripts.json",
+    "contractChecksum": "data/credential-revocation.sha256",
+    "publicProof": "data/automatic-public-verification-proof.json",
+    "publicProofLog": "data/logs/public-proof-export.log",
+    "nodeLog": "data/logs/offckb-node.log",
+    "inspectorLog": "data/logs/public-inspector.log"
+  }
+}
