@@ -14,10 +14,13 @@ if [[ ! -f .env ]]; then
   fi
 fi
 
-set -a
-# shellcheck disable=SC1091
-source .env
-set +a
+REVOCATION_CONTRACT_BIN="$(node --input-type=module - "$ROOT" <<'NODE'
+import { loadEnv } from "./src/lib/env.js";
+const env = loadEnv(process.argv[2]);
+process.stdout.write(env.REVOCATION_CONTRACT_BIN);
+NODE
+)"
+export REVOCATION_CONTRACT_BIN
 
 bash scripts/check-env.sh
 bash scripts/check-toolchain.sh

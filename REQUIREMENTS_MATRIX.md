@@ -33,7 +33,7 @@
 
 | Handbook requirement | Repository support | Current evidence status |
 |---|---|---|
-| Weekly contemporaneous GitHub report | evidence-first report templates | participant must publish personally each week |
+| Weekly contemporaneous GitHub report | Week 1 and Week 2 reports with linked evidence | completed for the two recorded reporting periods |
 | Course/module completion and scores | `learning/academy/` structure | not yet recorded |
 | CCC Playground work | dedicated evidence directory | not yet recorded |
 | Screenshots for practical work | screenshots and evidence folders | capstone evidence exists; course evidence still needed |
@@ -44,8 +44,9 @@ See `HANDBOOK_PROGRESS.md`. Do not mark missing course work as completed based o
 
 ## Test inventory after v2.1 changes
 
-- JavaScript: **61 test cases**; current packaging run: **60 passed, 1 CCC test skipped, 0 failed**.
-- Rust contract: **5 unit tests** and **18 `ckb-testtool` integration tests** in source.
-- Community conformance: **6 vectors**, checked by two independent JavaScript decoders.
+- JavaScript: **74 passed, 0 failed, 0 skipped** in the recorded WSL run.
+- Rust contract: **5 unit tests passed** and **18 `ckb-testtool` integration tests passed**.
+- Community conformance: **6 deterministic vectors**, checked by the application decoder and the standalone community decoder.
+- Automatic local lifecycle: hardened contract deployed, one `ACTIVE` Cell created, one `REVOKED` Cell confirmed, public proof exported, and inspector health verified.
 
-The new Rust binary must be rebuilt and the local lifecycle rerun before publishing new deployment evidence.
+See `reports/week-02-report.md` and `evidence/week-02-run-summary.json`.

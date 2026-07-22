@@ -26,13 +26,14 @@
 - [x] Decoder CLI and HTTP endpoint
 - [x] Contribution guide and issue templates
 - [x] Upstream decoder proposal prepared
-- [ ] Deploy the hardened contract and create a fresh public testnet fixture
+- [x] Deploy the hardened contract and create a fresh local OffCKB fixture
+- [ ] Create a public testnet fixture only after programme-lead approval and safe testnet setup
 - [ ] Open a real community issue/post with one specific review request
 - [ ] Record feedback and the resulting code/documentation change
 
 ## Handbook evidence
 
-- [ ] Publish the current weekly report on the chosen day
+- [x] Prepare Week 1 and Week 2 evidence-linked reports
 - [ ] Record exact CKB Academy modules and scores
 - [ ] Record CCC Playground exercises with screenshots
 - [ ] Explain Cell Model concepts in the participant's own words
@@ -45,7 +46,7 @@ Before publishing:
 npm run ci:local
 ```
 
-Before claiming the new contract version is deployment-tested:
+To reproduce the recorded deployment-tested contract version:
 
 ```bash
 bash scripts/local-offckb-all.sh

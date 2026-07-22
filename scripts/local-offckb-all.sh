@@ -13,11 +13,14 @@ SYSTEM_SCRIPTS="$ROOT/deployment/system-scripts.json"
 DEPLOYMENT_DIR="$ROOT/deployment"
 PRIVATE_KEY_FILE="$ROOT/secrets/offckb-issuer-private-key"
 CONTRACT_BIN="$ROOT/digital-credentials-workspace/build/release/credential-revocation"
-LOCAL_CHAIN_CREDENTIAL_ID="${LOCAL_CHAIN_CREDENTIAL_ID:-CKB-DEGREE-LOCAL-$(date +%Y%m%d%H%M%S)}"
+LOCAL_CHAIN_CREDENTIAL_ID="${LOCAL_CHAIN_CREDENTIAL_ID:-CKB-DEGREE-LOCAL-$(date +%Y%m%d%H%M%S)-$$}"
 STARTED_NODE=0
 NODE_PID=""
+RUN_DIR="$ROOT/data/run"
+OFFCKB_PID_FILE="${OFFCKB_PID_FILE:-$RUN_DIR/offckb.pid}"
+INSTALL_MISSING="${INSTALL_MISSING:-1}"
 
-mkdir -p "$LOG_DIR" "$ROOT/secrets" "$DEPLOYMENT_DIR"
+mkdir -p "$LOG_DIR" "$ROOT/secrets" "$DEPLOYMENT_DIR" "$RUN_DIR"
 chmod 700 "$ROOT/secrets" 2>/dev/null || true
 
 info() { printf '\n[INFO] %s\n' "$*"; }
@@ -26,11 +29,18 @@ warn() { printf '[WARN] %s\n' "$*" >&2; }
 fail() { printf '\n[ERROR] %s\n' "$*" >&2; exit 1; }
 
 cleanup() {
-  if [[ "$STARTED_NODE" == "1" && "${KEEP_OFFCKB_NODE:-0}" != "1" && -n "$NODE_PID" ]]; then
-    info "Stopping the OffCKB process started by this script."
-    kill "$NODE_PID" 2>/dev/null || true
-    pkill -P "$NODE_PID" 2>/dev/null || true
+  local status=$?
+  if [[ "$STARTED_NODE" == "1" && -n "$NODE_PID" && ( "${KEEP_OFFCKB_NODE:-0}" != "1" || "$status" != "0" ) ]]; then
+    if [[ "$status" == "0" ]]; then
+      info "Stopping the OffCKB process started by this script."
+    else
+      warn "The workflow failed; stopping the OffCKB process started during this run."
+    fi
+    pkill -TERM -P "$NODE_PID" 2>/dev/null || true
+    kill -TERM "$NODE_PID" 2>/dev/null || true
+    rm -f "$OFFCKB_PID_FILE"
   fi
+  return "$status"
 }
 trap cleanup EXIT INT TERM
 
@@ -56,6 +66,7 @@ install_build_tools_if_possible() {
     return 0
   fi
 
+  [[ "$INSTALL_MISSING" == "1" ]] || fail "Missing system build tools: ${missing[*]}. Rerun without --no-install."
   info "Missing system build tools: ${missing[*]}. Installing the required packages."
 
   if command -v apt-get >/dev/null; then
@@ -131,6 +142,7 @@ install_rust_if_missing() {
     source "$HOME/.cargo/env"
   fi
   if ! command -v cargo >/dev/null || ! command -v rustup >/dev/null; then
+    [[ "$INSTALL_MISSING" == "1" ]] || fail "Rust/rustup is missing. Rerun without --no-install."
     info "Rust is missing. Installing the minimal Rust toolchain automatically."
     curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs \
       | sh -s -- -y --profile minimal --default-toolchain stable
@@ -269,10 +281,19 @@ extract_first_account
 
 if rpc_ready; then
   pass "An OffCKB node is already running; it will be reused."
+  if [[ -s "$OFFCKB_PID_FILE" ]]; then
+    SAVED_PID="$(tr -dc '0-9' <"$OFFCKB_PID_FILE")"
+    [[ -n "$SAVED_PID" ]] && kill -0 "$SAVED_PID" 2>/dev/null || rm -f "$OFFCKB_PID_FILE"
+  fi
 else
   info "Starting a local OffCKB blockchain. The first launch may download the CKB binary."
-  "$ROOT/node_modules/.bin/offckb" node >"$NODE_LOG" 2>&1 &
+  if [[ "${KEEP_OFFCKB_NODE:-0}" == "1" ]]; then
+    nohup "$ROOT/node_modules/.bin/offckb" node </dev/null >"$NODE_LOG" 2>&1 &
+  else
+    "$ROOT/node_modules/.bin/offckb" node >"$NODE_LOG" 2>&1 &
+  fi
   NODE_PID=$!
+  printf '%s\n' "$NODE_PID" >"$OFFCKB_PID_FILE"
   STARTED_NODE=1
   wait_for_rpc
 fi
@@ -288,7 +309,7 @@ bash scripts/check-env.sh
 
 info "Running the complete offline application test suite and credential demo."
 npm test
-npm run demo
+DEMO_CREDENTIAL_ID="$LOCAL_CHAIN_CREDENTIAL_ID" npm run demo
 
 info "Formatting, building, and testing the Rust CKB Type Script."
 (
@@ -363,6 +384,7 @@ LOCAL OFFCKB LEVEL-2 RUN COMPLETED SUCCESSFULLY
 Network:                 local OffCKB devnet only
 RPC:                     $RPC_URL
 Credential ID:           $LOCAL_CHAIN_CREDENTIAL_ID
+Off-chain/on-chain ID:    identical for the complete automated run
 Issuer address:          $(grep '^CKB_ISSUER_ADDRESS=' .env | cut -d= -f2-)
 Issuer Lock Script hash: $(grep '^ISSUER_LOCK_HASH=' .env | cut -d= -f2-)
 Deployment record:       deployment/scripts.json

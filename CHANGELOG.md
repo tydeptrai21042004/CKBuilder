@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.1.1 — Automatic end-to-end launcher
+
+### Added
+
+- Root `run-full-project.sh` launcher for environment detection, installation, local account selection, full build/test/deploy/lifecycle, and inspector startup.
+- `--fast`, `--status`, `--restart`, `--stop`, `--foreground`, and `--no-install` modes.
+- Persistent project-owned PID files and safe service shutdown that does not terminate an external OffCKB node.
+- Machine-readable `data/run/launch-summary.json` after a successful run.
+- Integrated public-proof export using the same credential ID across the off-chain and on-chain lifecycle.
+- Automatic-launcher tests and complete setup documentation.
+
+### Changed
+
+- The local OffCKB runner can keep its node alive through `nohup` and records its managed PID.
+- Existing compatible Node, npm, Rust, toolchain, dependency, key, configuration, RPC, and service state is reused where possible.
+- The documented primary run command no longer requires manual wallet or account setup.
+- `.env` files are parsed as data rather than executed as shell code.
+- The launcher forces a loopback-only RPC and refuses non-local endpoints.
+
 ## 2.1.0 — Community interoperability and policy hardening
 
 ### Added
@@ -32,3 +51,20 @@
 - Added off-chain/on-chain state comparison and proof export.
 - Added browser interface and duplicate/malformed Cell reporting.
 - Fixed revocation timestamp rollback and signed-event binding defects.
+
+## 2.1.2 - 2026-07-22
+
+### Fixed
+
+- Fixed a false-negative inspector startup failure in the one-command launcher.
+- The health checker now accepts both compact JSON (`"ok":true`) and pretty-printed JSON (`"ok": true`).
+- Added a reusable health-response parser and a regression test for the exact response format returned by `/api/health`.
+- Startup failures now print the direct health response and inspector log for diagnosis.
+
+### Documentation and evidence update
+
+- Added professional Week 1 and Week 2 reports with direct evidence links.
+- Added three Week 2 screenshots for the successful automatic run, lifecycle completion, and final `REVOKED` Cell.
+- Added a sanitized complete end-to-end terminal log and machine-readable Week 2 run summary.
+- Updated README, test status, handbook tracker, requirements matrix, and submission checklist to the latest verified results.
+- Removed generated `.env`, issuer private keys, OffCKB private-account listings, and stale PID files from the distributable package.

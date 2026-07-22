@@ -11,10 +11,15 @@ run(() => {
     fs.rmSync(path.join(config.DATA_DIR, entry), { recursive: true, force: true });
   }
   initializeIssuer(config);
-  const input = loadInputJson(path.join(root, "examples/degree-input.json"));
+  const baseInput = loadInputJson(path.join(root, "examples/degree-input.json"));
+  const input = {
+    ...baseInput,
+    credentialId: process.env.DEMO_CREDENTIAL_ID?.trim() || baseInput.credentialId
+  };
   const original = path.join(root, "examples/certificate-original.pdf");
   const modified = path.join(root, "examples/certificate-modified.pdf");
 
+  console.log(`\nCredential ID for this complete demo: ${input.credentialId}`);
   console.log("\n=== 1. MINT ===");
   const record = mintCredential(config, input, original, { createdAt: "2026-07-14T00:00:00.000Z" });
   console.log(`Minted ${record.payload.credentialId} as ${record.status}.`);

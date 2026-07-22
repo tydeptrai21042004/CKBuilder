@@ -1,158 +1,229 @@
-# CKB Degree Proof v2.1 — Public Credential Inspector and Community Decoder
+# CKB Degree Proof v2.1.2
 
-A CKB credential capstone with issuance, signed revocation, a Rust Type Script, and a public read-only inspector for credential integrity and live Cell state.
+## Automatic End-to-End Public Credential Inspector
 
-The project continues the CKBuilder **“create your own basic application”** task while retaining the original repository structure. It now provides:
+CKB Degree Proof is a CKBuilder capstone that demonstrates signed academic credentials, document-integrity verification, on-chain credential status, and a public read-only inspector on a local CKB development network.
 
-- a Node.js credential application;
-- privacy-conscious identity commitments;
-- signed credential and revocation records;
-- certificate-file tamper detection;
-- a custom Rust CKB Type Script;
-- positive and negative contract tests;
-- automatic environment and toolchain checks;
-- one-command local deployment and per-Cell `ACTIVE → REVOKED` verification;
-- a read-only inspector that does not load an issuer private key;
-- duplicate/conflicting Cell detection and exportable verification proofs;
-- a small browser interface for community testing;
-- a dependency-free Cell-data decoder and deterministic conformance vectors;
-- an independent exported-proof verifier;
-- hardened HTTP request handling and issuer-output-lock enforcement.
+The project retains its original application, Rust contract, tests, and evidence structure while extending them with:
 
-> **Network boundary:** the verified evidence in this repository uses only the local OffCKB devnet. No testnet or mainnet wallet or funds were used.
+- one-command environment setup and execution;
+- automatic local OffCKB account selection;
+- a Rust CKB Type Script for credential-state transitions;
+- a public inspector that does not load an issuer private key;
+- certificate hash and issuer-signature verification;
+- duplicate, conflicting, and malformed Cell detection;
+- exportable public verification proofs;
+- a dependency-free Cell-data decoder and conformance vectors;
+- reproducible community documentation and weekly CKBuilder reports.
 
+> **Network boundary:** all transaction evidence in this repository belongs to an ephemeral local OffCKB devnet. No testnet or mainnet wallet, funds, or public explorer transaction was used.
 
-## Public Credential Inspector v2.1
+## CKBuilder weekly reports
 
-The v2 inspector is an extension of the existing project, not a repository rewrite. Existing minting, revocation, Rust contract, OffCKB lifecycle, evidence and reporting files remain in place.
+- [Week 1 — Initial credential application and Rust revocation contract](reports/week-01-report.md)
+- [Week 2 — Public Credential Inspector and automatic end-to-end workflow](reports/week-02-report.md)
+- [Handbook progress tracker](HANDBOOK_PROGRESS.md)
 
-It can:
+The weekly reports distinguish formal handbook learning from capstone engineering and link to the corresponding screenshots, logs, test output, and machine-readable evidence.
+
+## Run the complete project
+
+From Ubuntu, Debian, WSL2, or macOS Terminal:
+
+```bash
+bash run-full-project.sh
+```
+
+The launcher checks the existing environment and reuses compatible tools before installing anything. It then:
+
+1. validates Node.js, npm, Rust, Cargo, Make, and the RISC-V toolchain;
+2. installs only missing prerequisites;
+3. starts or reuses a local OffCKB node;
+4. selects a prefunded local development account;
+5. creates or reuses local issuer signing keys;
+6. runs the JavaScript application and test suite;
+7. builds and tests the Rust contract;
+8. deploys the contract to local OffCKB;
+9. uses one credential ID for the off-chain and on-chain workflow;
+10. creates an `ACTIVE` Cell and consumes it into a `REVOKED` Cell;
+11. exports and independently verifies a public proof;
+12. starts the read-only browser inspector.
+
+After completion, open:
+
+```text
+http://127.0.0.1:4173
+```
+
+No browser wallet, wallet extension, seed phrase, faucet, testnet token, or manual account import is required.
+
+### Service commands
+
+```bash
+bash run-full-project.sh --status
+bash run-full-project.sh --fast
+bash run-full-project.sh --restart
+bash run-full-project.sh --stop
+npm run inspector:health
+```
+
+On Linux or WSL, `sudo` may be requested once if operating-system build packages are missing. Detailed setup notes are available in [docs/AUTOMATIC_END_TO_END_SETUP.md](docs/AUTOMATIC_END_TO_END_SETUP.md).
+
+## Latest verified end-to-end run
+
+A complete v2.1.2 workflow was recorded on **22 July 2026**.
+
+| Check | Result |
+|---|---:|
+| Node.js application, API, launcher, proof, and security tests | **74 passed, 0 failed** |
+| Rust contract unit tests | **5 passed, 0 failed** |
+| CKB `ckb-testtool` integration tests | **18 passed, 0 failed** |
+| Contract deployment to local OffCKB | **Passed** |
+| On-chain `ACTIVE` Cell creation | **Passed** |
+| On-chain `ACTIVE → REVOKED` transition | **Passed** |
+| Final live Cell query | **1 revoked, 0 active, 0 invalid** |
+| Public inspector startup | **Passed** |
+| Public proof verification | **Passed** |
+
+### Latest local evidence
+
+| Item | Value |
+|---|---|
+| Credential ID | `CKB-DEGREE-LOCAL-20260722215119-641` |
+| Contract deployment transaction | `0x6c4be1ad765bf73df3ea12158e1843a0ed4090bedc5170d03647a09a335b97c4` |
+| `ACTIVE` record transaction | `0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3` |
+| `REVOKED` record transaction | `0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78` |
+| Issuer Lock Script hash | `0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653` |
+| Contract code hash | `0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6` |
+| Contract binary SHA-256 | `70b6d8d0ea6ca898921831fef16d95a9b7078560a4d70092c278f7694d395a01` |
+| Public proof outcome | `REVOKED` |
+| Public proof digest | `0xdfccadca6a43a5e6d39d24501ff842121bb0e6551585780f178be71e98fe717e` |
+
+The corresponding machine-readable files are:
+
+- [Week 2 run summary](evidence/week-02-run-summary.json)
+- [Latest chain state](data/offckb-chain-state.json)
+- [Deployment metadata](deployment/scripts.json)
+- [Integrated public proof](data/automatic-public-verification-proof.json)
+- [Sanitized complete terminal log](evidence/automatic-end-to-end-run-2026-07-22-sanitized.log)
+
+## Week 2 screenshots
+
+### Automatic setup, inspector readiness, and proof verification
+
+![Automatic end-to-end startup completed](screenshots/04-automatic-end-to-end-success.png)
+
+### Local OffCKB lifecycle and deployment evidence
+
+![Local OffCKB lifecycle completed](screenshots/05-local-offckb-lifecycle-success.png)
+
+### Final canonical `REVOKED` Cell
+
+![Final revoked Cell state](screenshots/06-final-revoked-cell.png)
+
+The screenshots were re-encoded before inclusion. The local Windows/WSL project path visible in the lifecycle screenshot was replaced with `<PROJECT_ROOT>`. Public local-devnet hashes, addresses, and transaction identifiers were retained as technical evidence. See [screenshots/SECURITY_REVIEW.md](screenshots/SECURITY_REVIEW.md).
+
+## Week 1 historical evidence
+
+The original Week 1 run remains available for comparison:
+
+- ![Rust contract tests](screenshots/01-rust-contract-tests.png)
+- ![Contract deployment](screenshots/02-contract-deployment.png)
+- ![Original local lifecycle](screenshots/03-local-offckb-success.png)
+- [Original sanitized log](evidence/local-offckb-run-sanitized.log)
+- [Original run summary](evidence/run-summary.json)
+
+## Public Credential Inspector
+
+The inspector can:
 
 - inspect a credential by ID without an issuer private key;
 - verify the issuer signature and trusted CKB Lock Script hash;
-- compare an uploaded certificate with the signed SHA-256 hash;
-- query the current live `ACTIVE` or `REVOKED` Cell through CKB RPC;
-- report duplicate, conflicting or malformed matching Cells;
+- compare a certificate with its signed SHA-256 hash;
+- query the live `ACTIVE` or `REVOKED` Cell through CKB RPC;
+- report duplicate, conflicting, or malformed matching Cells;
 - compare off-chain and on-chain state;
 - display saved `ACTIVE → REVOKED` transaction evidence;
-- export a machine-readable public verification proof.
+- export a machine-readable verification proof.
 
-CLI usage:
+### CLI
 
 ```bash
-npm run credential:inspect -- CKB-DEGREE-2026-0001 examples/certificate-original.pdf
-npm run credential:inspect -- CKB-DEGREE-2026-0001 examples/certificate-original.pdf --export=data/proof.json
+npm run credential:inspect -- \
+  CKB-DEGREE-2026-0001 \
+  examples/certificate-original.pdf
+
+npm run credential:inspect -- \
+  CKB-DEGREE-2026-0001 \
+  examples/certificate-original.pdf \
+  --export=data/proof.json
 ```
 
-Browser interface:
+### Browser interface
 
 ```bash
 npm run inspector:serve
 ```
 
-Then open `http://127.0.0.1:4173`. See [`docs/PUBLIC_INSPECTOR.md`](docs/PUBLIC_INSPECTOR.md) and the in-place implementation map in [`docs/V2_IMPLEMENTATION_GUIDE.md`](docs/V2_IMPLEMENTATION_GUIDE.md).
+Then open `http://127.0.0.1:4173`.
 
-> **Protocol boundary:** the current Type Script makes the transition irreversible for one Cell lineage. It does not yet provide global uniqueness against creating a separate new `ACTIVE` Cell with the same credential hash. The inspector reports duplicate live records as `CONFLICT_DUPLICATE`.
+See:
 
-### Community interoperability package
+- [Public Inspector documentation](docs/PUBLIC_INSPECTOR.md)
+- [v2 implementation guide](docs/V2_IMPLEMENTATION_GUIDE.md)
+- [Automatic setup guide](docs/AUTOMATIC_END_TO_END_SETUP.md)
 
-The repository now publishes reusable, no-wallet artifacts for other CKB developer tools:
+## Community interoperability package
 
-- [`docs/CREDENTIAL_CELL_DATA_FORMAT.md`](docs/CREDENTIAL_CELL_DATA_FORMAT.md): normative 75-byte layout;
-- [`community/decoder/credential-cell-decoder.js`](community/decoder/credential-cell-decoder.js): standalone decoder;
-- [`community/test-vectors/credential-cell-v1.json`](community/test-vectors/credential-cell-v1.json): valid and malformed deterministic vectors;
-- `npm run cell:decode -- <0x-data-or-file>`: command-line decoder;
-- `npm run proof:verify -- <proof.json>`: independent proof digest/privacy verification;
-- `npm run manifest:export -- <manifest.json>`: deployment-specific decoder recognition metadata;
-- `/api/decode-cell` and `/api/verify-proof`: public read-only endpoints.
+The repository publishes reusable reference artifacts for other CKB tools:
 
-These are community reference artifacts, not an official CKB standard. See [`docs/COMMUNITY_CONTRIBUTION.md`](docs/COMMUNITY_CONTRIBUTION.md).
+- [Credential Cell data format](docs/CREDENTIAL_CELL_DATA_FORMAT.md)
+- [Standalone decoder](community/decoder/credential-cell-decoder.js)
+- [Deterministic test vectors](community/test-vectors/credential-cell-v1.json)
+- [Public proof JSON schema](community/schemas/public-verification-proof-v2.schema.json)
+- [Decoder integration proposal](docs/CKB_VIZ_DECODER_PROPOSAL.md)
+- [Community contribution guide](docs/COMMUNITY_CONTRIBUTION.md)
 
-Current v2.1 verification in this package:
+Useful commands:
 
-- **61 Node.js test cases** are present; in the packaging environment, **60 passed and one CCC integration test was skipped** because `@ckb-ccc/core` was unavailable;
-- six deterministic Cell-data vectors pass both the application decoder and standalone community decoder;
-- HTTP tests cover security headers, content types, upload limits, path traversal, decoder/proof endpoints, and error handling;
-- Rust source now contains **5 unit tests and 18 `ckb-testtool` integration tests**; these require the documented Rust/CKB toolchain to rerun;
-- CLI proof verification, Cell-data decoding, syntax checks, and release audit are part of `npm run ci:local`.
+```bash
+npm run cell:decode -- <0x-cell-data-or-file>
+npm run proof:verify -- data/automatic-public-verification-proof.json
+npm run test:vectors
+npm run community:check
+npm run manifest:export -- decoder-manifest.json
+```
 
-## Verified execution result
+The public HTTP service also exposes:
 
-A complete run succeeded on **14 July 2026**.
+```text
+GET  /api/health
+POST /api/inspect
+POST /api/decode-cell
+POST /api/verify-proof
+```
 
-| Check | Result |
-|---|---:|
-| Node.js tests | **11 passed, 0 failed** |
-| Rust contract unit tests | **2 passed, 0 failed** |
-| CKB `ckb-testtool` integration tests | **11 passed, 0 failed** |
-| Contract deployment to local OffCKB | **Passed** |
-| On-chain `ACTIVE` Cell creation | **Passed** |
-| On-chain `ACTIVE → REVOKED` transition | **Passed** |
-| Final indexer query | **`REVOKED` confirmed** |
-
-### Local-chain evidence
-
-| Item | Value |
-|---|---|
-| Credential ID | `CKB-DEGREE-LOCAL-20260714230026` |
-| Contract deployment transaction | `0x59bbd2c35c2127be21489b9f0f85ff6e8a3cb50d350aa85caac39d0d6d2368cf` |
-| ACTIVE record transaction | `0xf87a22dc73eba45646199263d52e8708f5de6c00d1b4bd6f546c867b36ea5637` |
-| REVOKED record transaction | `0x19b80e7e307580b45a19269c48c2bf9ee19e5931133efd212c9dac00658ecf5a` |
-| Issuer Lock Script hash | `0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653` |
-| Contract code hash | `0x61d275873bc434e8c84cd9556e6e13feb879b8be2878f16fa204575544ce50d0` |
-| Contract binary SHA-256 | `2fb86c4892f0308e34da1632b5fc263a570fb0ab1d2f0284b0d2cb417a7cf46a` |
-
-These transaction hashes belong to an ephemeral local blockchain and are not public explorer links.
-
-## Screenshots
-
-### Rust unit and integration tests
-
-![Rust contract tests](screenshots/01-rust-contract-tests.png)
-
-### Contract deployment to local OffCKB
-
-![Contract deployment](screenshots/02-contract-deployment.png)
-
-### Final per-Cell REVOKED state
-
-![Successful local lifecycle run](screenshots/03-local-offckb-success.png)
-
-The screenshots were reviewed for sensitive information and sanitized before inclusion. Local filesystem paths and the local Windows account identifier were redacted. No private-key value, seed phrase, password, API key, `.env` content, raw student ID, or identity salt appears in them. See [`screenshots/SECURITY_REVIEW.md`](screenshots/SECURITY_REVIEW.md).
-
-The complete sanitized terminal log and a machine-readable run summary are available in [`evidence/`](evidence/).
+These materials are community reference artifacts and are not presented as an official CKB standard.
 
 ## Application design
 
-### Node.js application layer
+### Off-chain credential layer
 
-The application supports:
+The Node.js application supports:
 
-1. issuer Ed25519 key initialization;
-2. credential minting from degree data and a certificate file;
-3. storage of a salted identity commitment instead of a raw student ID;
-4. issuer signature verification;
+1. Ed25519 issuer-key initialization;
+2. credential creation from degree data and a certificate file;
+3. salted identity commitments instead of raw student IDs;
+4. issuer-signature verification;
 5. certificate SHA-256 verification;
 6. recipient-binding verification;
 7. duplicate credential prevention;
 8. signed revocation records;
-9. generation of the exact 75-byte Cell data consumed by the Rust contract.
+9. generation of the 75-byte Cell data consumed by the Rust contract.
 
-Expected application behavior:
+### On-chain policy layer
 
-| Scenario | Expected result |
-|---|---|
-| Original certificate | `VALID` |
-| Modified certificate | `INVALID` — document hash mismatch |
-| Untrusted issuer | `INVALID` |
-| Tampered signed payload | `INVALID` |
-| Revoked credential | `INVALID` |
-| Duplicate credential ID | Rejected |
-| Second revocation | Rejected |
-
-### Rust on-chain policy layer
-
-The Type Script in `digital-credentials-workspace/contracts/credential-revocation` enforces the following rules for each Cell lineage:
+The Rust Type Script protects each credential Cell lineage:
 
 ```text
 creation:   no group input   -> one ACTIVE output
@@ -162,72 +233,25 @@ revocation: one ACTIVE input -> one REVOKED output
 It rejects:
 
 - unauthorized creation;
-- creation or update under a non-issuer output Lock Script;
+- creation or update under a foreign output Lock Script;
 - creation directly in the revoked state;
 - `REVOKED → ACTIVE` reactivation;
-- credential ID changes;
+- credential-hash or issuer changes;
 - registry-record destruction;
 - malformed Cell data;
-- multiple output records;
+- multiple protected inputs or outputs;
 - missing reason codes;
 - missing revocation timestamps.
 
-## One-command local run
+> **Protocol boundary:** the Type Script makes revocation irreversible for one Cell lineage. It does not yet guarantee global uniqueness against a separate independent `ACTIVE` Cell created with the same credential hash. The public inspector reports multiple matching live records as a conflict.
 
-### Requirements
+## Manual commands
 
-- Linux, macOS, or WSL;
-- Node.js 20 or newer;
-- npm;
-- Bash and curl;
-- internet access during first installation;
-- administrator permission to install missing Ubuntu/WSL packages.
-
-On Ubuntu/WSL, the automation installs the required bare-metal RISC-V C toolchain:
-
-```text
-gcc-riscv64-unknown-elf
-binutils-riscv64-unknown-elf
-```
-
-This toolchain is required because `ckb-std 0.17.2` builds a small C helper even though the application contract is written in Rust.
-
-### Run
-
-```bash
-chmod +x scripts/*.sh
-chmod +x digital-credentials-workspace/scripts/*
-bash scripts/local-offckb-all.sh
-```
-
-The script automatically:
-
-1. validates Node.js, npm, Rust, Cargo, Make, and the RISC-V toolchain;
-2. installs missing prerequisites on Ubuntu/WSL;
-3. forces the public npm registry for the run;
-4. starts local OffCKB;
-5. selects the first prefunded development account;
-6. derives the issuer Lock Script hash with CCC;
-7. creates or updates `.env` locally;
-8. runs the Node.js tests and application demo;
-9. formats, builds, and tests the Rust contract;
-10. deploys the contract to local OffCKB;
-11. creates an on-chain `ACTIVE` record;
-12. consumes it into an on-chain `REVOKED` record;
-13. queries the final live Cell and requires `REVOKED`;
-14. records the binary checksum and local evidence.
-
-To leave the OffCKB node running after completion:
-
-```bash
-KEEP_OFFCKB_NODE=1 bash scripts/local-offckb-all.sh
-```
-
-## Manual application commands
+### Application
 
 ```bash
 cp .env.example .env
-npm install
+npm ci
 npm run issuer:init
 npm run ledger:reset
 npm run credential:mint -- examples/degree-input.json examples/certificate-original.pdf
@@ -236,7 +260,7 @@ npm run credential:revoke -- CKB-DEGREE-2026-0001 1 "Administrative correction"
 npm run credential:verify -- CKB-DEGREE-2026-0001 examples/certificate-original.pdf
 ```
 
-## Manual Rust commands
+### Rust contract
 
 ```bash
 cd digital-credentials-workspace
@@ -250,33 +274,33 @@ The release binary is generated at:
 digital-credentials-workspace/build/release/credential-revocation
 ```
 
-The CKB build uses:
-
-```text
--C target-feature=+zba,+zbb,+zbc,+zbs
--C passes=lower-atomic
-```
-
-`lower-atomic` is required for the current Molecule/`bytes` dependency path on the CKB RISC-V target.
-
 ## Repository structure
 
 ```text
 .
-├── community/                      standalone decoder and deterministic vectors
+├── community/                      standalone decoder, schemas, and test vectors
 ├── digital-credentials-workspace/  Rust Type Script and ckb-testtool tests
-├── docs/                           public inspector design and limitations
-├── evidence/                       sanitized log and verified run summary
+├── docs/                           architecture, setup, format, and limitations
+├── evidence/                       sanitized logs and machine-readable summaries
 ├── examples/                       deterministic credential fixtures
-├── public/                         no-build browser inspector interface
-├── reports/                        weekly report template
+├── learning/                       handbook learning records
+├── public/                         no-build browser inspector
+├── reports/                        Week 1, Week 2, and future report templates
 ├── screenshots/                    sanitized execution screenshots
 ├── scripts/                        environment, release, and automation scripts
 ├── src/                            Node.js application and CKB integration
-└── test/                           Node.js, HTTP, codec, proof and conformance tests
+└── test/                           application, HTTP, codec, proof, and launcher tests
 ```
 
+## Security and release hygiene
 
-## CKBuilder handbook evidence
+Generated local configuration and keys are intentionally excluded from the public package:
 
-Engineering output and programme-learning evidence are tracked separately. See [`HANDBOOK_PROGRESS.md`](HANDBOOK_PROGRESS.md), [`learning/`](learning/), and [`reports/`](reports/). Weekly reports must use actual module scores, commands, screenshots, blockers, and personal explanations; the templates are prompts rather than completed reports.
+```text
+.env
+secrets/
+data/run/*.pid
+data/logs/offckb-accounts.txt
+```
+
+The automatic launcher recreates the required local-only configuration and development keys on first run. See [SECURITY.md](SECURITY.md) and [screenshots/SECURITY_REVIEW.md](screenshots/SECURITY_REVIEW.md).

@@ -1,35 +1,34 @@
 # Screenshot Security Review
 
-The three screenshots in this directory were reviewed and sanitized before inclusion.
+The six screenshots in this directory were reviewed before inclusion.
 
 ## Checked for sensitive information
 
-- private-key values or PEM private-key blocks;
+- issuer private-key values or PEM private-key blocks;
 - seed phrases or wallet mnemonics;
 - passwords, access tokens, API keys, or session cookies;
 - `.env` contents;
 - raw student identifiers or identity salts;
-- secret signing material.
+- production wallet or mainnet account information.
 
 **Result:** none of those values appears in the screenshots.
 
-## Redactions applied
+## Redaction and processing
 
-- the local Windows/WSL filesystem path;
-- the local Windows account identifier contained in that path;
-- local artifact paths that are not needed as technical evidence.
-
-The PNG files were re-encoded after redaction, which removed incidental PNG metadata.
+- all three Week 2 images were re-encoded as PNG files;
+- the local Windows/WSL account path in `05-local-offckb-lifecycle-success.png` was replaced with `<PROJECT_ROOT>`;
+- no technical pass/fail result, checksum, transaction hash, credential hash, code hash, or local-devnet address was changed.
 
 ## Values intentionally retained
 
-The following are not secrets and are retained as local-devnet evidence:
+The following values are retained as local-devnet technical evidence:
 
 - OffCKB development address;
 - issuer Lock Script hash;
 - credential hash;
 - local transaction hashes;
-- contract code hash/checksum;
-- test names and pass/fail output.
+- contract code hash and checksum;
+- test names and pass/fail output;
+- loopback RPC and inspector addresses.
 
-These values belong to a local OffCKB development chain. The associated development account is publicly known and must never be used with real assets.
+These values belong only to local OffCKB development networks. The associated prefunded development accounts must never be used with real assets.

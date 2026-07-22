@@ -13,40 +13,41 @@ pass() {
   printf '[PASS] %s\n' "$1"
 }
 
-for forbidden in .env secrets data deployment node_modules; do
-  [[ ! -e "$forbidden" ]] || fail "Release contains forbidden generated path: $forbidden"
+for forbidden in .env secrets node_modules; do
+  [[ ! -e "$forbidden" ]] || fail "Release contains forbidden local path: $forbidden"
+done
+
+for forbidden_file in data/run/offckb.pid data/run/inspector.pid data/logs/offckb-accounts.txt; do
+  [[ ! -e "$forbidden_file" ]] || fail "Release contains forbidden runtime file: $forbidden_file"
 done
 
 for required in \
   screenshots/01-rust-contract-tests.png \
   screenshots/02-contract-deployment.png \
   screenshots/03-local-offckb-success.png \
+  screenshots/04-automatic-end-to-end-success.png \
+  screenshots/05-local-offckb-lifecycle-success.png \
+  screenshots/06-final-revoked-cell.png \
   screenshots/SECURITY_REVIEW.md \
   evidence/run-summary.json \
   evidence/local-offckb-run-sanitized.log \
-  evidence/v2-node-tests.txt \
-  evidence/v2-offline-inspector.txt \
-  evidence/v2-inspector-smoke-summary.json \
-  evidence/v2.1-node-tests.txt \
-  evidence/v2.1-community-conformance.txt \
-  evidence/v2.1-http-smoke-summary.json \
-  evidence/v2.1-proof-verifier.txt \
-  evidence/v2.1-ci-local.txt \
+  evidence/automatic-end-to-end-run-2026-07-22-sanitized.log \
+  evidence/week-02-run-summary.json \
+  reports/week-01-report.md \
+  reports/week-02-report.md \
+  data/offckb-chain-state.json \
+  data/automatic-public-verification-proof.json \
+  deployment/scripts.json \
   .env.example \
   .gitignore \
   docs/PUBLIC_INSPECTOR.md \
   docs/CREDENTIAL_CELL_DATA_FORMAT.md \
-  docs/NERVOS_TALK_RELEASE_CHECKLIST.md \
-  community/README.md \
   community/decoder/credential-cell-decoder.js \
-  community/decoder/decoder-manifest.example.json \
-  community/schemas/credential-cell-test-vectors-v1.schema.json \
-  community/schemas/public-verification-proof-v2.schema.json \
   community/test-vectors/credential-cell-v1.json \
   HANDBOOK_PROGRESS.md \
   CONTRIBUTING.md \
   LICENSE; do
-  [[ -f "$required" ]] || fail "Missing evidence file: $required"
+  [[ -f "$required" ]] || fail "Missing required file: $required"
 done
 
 if grep -RIE --exclude-dir=node_modules --exclude-dir=target --exclude='*.png' --exclude='audit-release.sh' --exclude='v2.1-ci-local.txt' \
@@ -54,21 +55,22 @@ if grep -RIE --exclude-dir=node_modules --exclude-dir=target --exclude='*.png' -
   fail 'Potential private signing material was found.'
 fi
 
-if grep -RIE --exclude-dir=node_modules --exclude-dir=target --exclude='*.png' --exclude='v2.1-ci-local.txt' \
-  '/mnt/c/Users/18521|tydeptrai@dangbatydeptrai|C:\\Users\\18521|/mnt/data/ckbuilder_work' screenshots evidence; then
-  fail 'Unsanitized local username/path found in evidence.'
+if grep -RIE --exclude-dir=node_modules --exclude-dir=target --exclude='*.png' --exclude='audit-release.sh' --exclude='v2.1-ci-local.txt' \
+  -- '/mnt/c/Users/[A-Za-z0-9._-]+|C:\\Users\\[A-Za-z0-9._-]+|/home/[A-Za-z0-9._-]+|[A-Za-z0-9._-]+@[A-Za-z0-9._-]+:' screenshots evidence data deployment; then
+  fail 'Unsanitized local username or absolute user path found in public evidence.'
 fi
 
 python3 -m json.tool evidence/run-summary.json >/dev/null
-python3 -m json.tool evidence/v2-inspector-smoke-summary.json >/dev/null
-python3 -m json.tool evidence/v2.1-http-smoke-summary.json >/dev/null
+python3 -m json.tool evidence/week-02-run-summary.json >/dev/null
+python3 -m json.tool data/offckb-chain-state.json >/dev/null
+python3 -m json.tool data/automatic-public-verification-proof.json >/dev/null
+python3 -m json.tool deployment/scripts.json >/dev/null
 python3 -m json.tool community/test-vectors/credential-cell-v1.json >/dev/null
-python3 -m json.tool community/decoder/decoder-manifest.example.json >/dev/null
-python3 -m json.tool community/schemas/credential-cell-test-vectors-v1.schema.json >/dev/null
-python3 -m json.tool community/schemas/public-verification-proof-v2.schema.json >/dev/null
 node scripts/verify-test-vectors.js >/dev/null
-pass 'No generated .env or secrets directory is present.'
+
+pass 'No generated .env, secrets directory, private account listing, or stale PID file is present.'
 pass 'No unapproved private-key, seed-phrase, or mnemonic assignment pattern was found.'
-pass 'Evidence paths and usernames are sanitized.'
+pass 'Public evidence paths and usernames are sanitized.'
+pass 'Reports, screenshots, logs, and machine-readable evidence are present.'
 pass 'Evidence and community test-vector JSON files are valid.'
 pass 'Release audit completed successfully.'

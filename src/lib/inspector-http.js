@@ -149,7 +149,7 @@ export function createInspectorServer(options) {
         sendJson(response, 200, {
           ok: true,
           service: "CKB Degree Proof Public Credential Inspector",
-          version: "2.1.0",
+          version: "2.1.2",
           network: config.APP_NETWORK,
           readOnly: true,
           privateKeyRequired: false,

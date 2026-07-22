@@ -1,64 +1,95 @@
-# Test status
+# Test and execution status
 
-## Verified in this packaging environment
+## Latest verified automatic run
 
-Command:
+A complete run was executed in WSL on **22 July 2026** with:
 
 ```bash
-npm test
+bash run-full-project.sh
 ```
 
-Result:
+### JavaScript
 
-- 61 JavaScript test cases discovered;
-- 60 passed;
-- 0 failed;
-- 1 skipped because `@ckb-ccc/core` was not installed.
+```text
+74 tests
+74 passed
+0 failed
+0 skipped
+```
 
-The passing set covers:
+The suite covers:
 
-- credential signing, tampering, issuer trust, document integrity and revocation;
+- credential signing, issuer trust, document integrity, revocation, and tamper detection;
 - invalid-date rollback and revocation-event binding;
-- public inspector outcomes and privacy boundary;
-- 75-byte binary codec and canonical-state validation;
-- standalone decoder parity across six deterministic vectors;
+- public inspector outcomes and privacy boundaries;
+- 75-byte Cell encoding, decoding, and canonical-state validation;
+- deterministic community-vector parity;
 - exported-proof digest and privacy verification;
-- HTTP security headers, request IDs, content type, size limits and path traversal;
-- decoder and proof HTTP endpoints;
-- OffCKB deployment/system-script parsing without CCC.
+- HTTP security headers, content types, upload limits, path traversal, Cell decoding, and proof verification;
+- OffCKB system-script and deployment parsing;
+- automatic launcher environment reuse, local account selection, PID safety, one-credential integration, and loopback-only RPC enforcement;
+- inspector readiness checking for valid JSON regardless of formatting whitespace.
 
-Also verified:
+### Rust contract
 
-```bash
-npm run test:vectors
-npm run syntax:check
-bash scripts/audit-release.sh
+```text
+5 unit tests passed
+18 ckb-testtool integration tests passed
+0 failed
 ```
 
-## Requires installed CCC dependency
+The contract cases include:
+
+- valid creation and revocation;
+- invalid version, status, and data length;
+- unauthorized creation;
+- foreign output Lock Script rejection;
+- credential and issuer immutability;
+- missing reason code or timestamp;
+- record destruction;
+- multiple protected inputs or outputs;
+- `REVOKED → ACTIVE` reactivation rejection.
+
+### Local OffCKB lifecycle
+
+- contract deployment: passed;
+- `ACTIVE` Cell creation: passed;
+- `ACTIVE → REVOKED` transition: passed;
+- final indexer result: `activeCount = 0`, `revokedCount = 1`, `invalidCount = 0`;
+- read-only inspector startup: passed;
+- integrated public proof export and independent verification: passed.
+
+## Evidence
+
+- [`reports/week-02-report.md`](reports/week-02-report.md)
+- [`evidence/week-02-run-summary.json`](evidence/week-02-run-summary.json)
+- [`evidence/automatic-end-to-end-run-2026-07-22-sanitized.log`](evidence/automatic-end-to-end-run-2026-07-22-sanitized.log)
+- [`data/offckb-chain-state.json`](data/offckb-chain-state.json)
+- [`data/automatic-public-verification-proof.json`](data/automatic-public-verification-proof.json)
+- [`screenshots/04-automatic-end-to-end-success.png`](screenshots/04-automatic-end-to-end-success.png)
+- [`screenshots/05-local-offckb-lifecycle-success.png`](screenshots/05-local-offckb-lifecycle-success.png)
+- [`screenshots/06-final-revoked-cell.png`](screenshots/06-final-revoked-cell.png)
+
+## Re-run commands
 
 ```bash
-npm ci --no-audit --no-fund
+# Complete environment, test, build, deployment, lifecycle, proof, and inspector run
+bash run-full-project.sh
+
+# Reuse the existing local setup
+bash run-full-project.sh --fast
+
+# JavaScript tests
 npm test
-```
 
-This enables the CCC integration test that derives the known first OffCKB development account Lock Script hash.
+# Community vectors
+npm run test:vectors
 
-## Requires Rust and CKB toolchain
-
-The source contains:
-
-- 5 Rust contract unit tests;
-- 18 `ckb-testtool` integration tests.
-
-Run:
-
-```bash
+# Rust tests
 npm run test:rust
+
+# Local release checks
+npm run ci:local
 ```
 
-The new Rust cases include invalid version/status/issuer, foreign output locks, multiple group inputs, and immutable issuer changes. They were added and syntax-reviewed but could not be compiled in the packaging environment because Cargo and the required CKB RISC-V toolchain were unavailable.
-
-## Previous verified local lifecycle
-
-The repository retains the sanitized 14 July 2026 evidence for the earlier contract binary and local OffCKB `ACTIVE → REVOKED` lifecycle. Because the Rust contract has now been hardened, a fresh local lifecycle must be run before claiming that the **new** binary was deployed successfully.
+All recorded blockchain transactions are from an ephemeral local OffCKB devnet.
