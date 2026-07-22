@@ -1,0 +1,775 @@
+CKB Degree Proof — Sanitized Automatic End-to-End Execution Log
+Date: 22 July 2026
+Scope: successful v2.1.1 local OffCKB run recorded before the later v2.1.2 health-check fix.
+Privacy: local username and absolute project paths were replaced. No private-key value is included.
+
+<USER>@<HOST>:<PROJECT_ROOT>$ chmod +x run-full-project.sh
+<USER>@<HOST>:<PROJECT_ROOT>$ ./run-full-project.sh 
+[PASS] Bootstrap tools already exist: curl, git, unzip.
+[PASS] Reusing Node v22.22.2 and npm 10.9.7.
+
+[INFO] Running the full local build, tests, automatic wallet setup, deployment, and chain lifecycle.
+[PASS] Base tools are available: Node v22.22.2, npm 10.9.7.
+[PASS] Host tools and the RISC-V bare-metal C cross-toolchain are already installed.
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-07-16 for version 1.97.1 (8bab26f4f 2026-07-14)
+info: removing previous version of component rust-std for target riscv64imac-unknown-none-elf
+info: removing previous version of component rustfmt
+info: removing previous version of component cargo
+info: removing previous version of component rust-std
+info: removing previous version of component rustc
+info: downloading 5 components
+info: checking for self-update (current version: 1.29.0)
+info: using existing install for stable-x86_64-unknown-linux-gnu
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+info: component rustfmt is up to date
+info: component rust-std for target riscv64imac-unknown-none-elf is up to date
+[PASS] Rust rustc 1.97.1 (8bab26f4f 2026-07-14) and CKB RISC-V target are ready.
+
+[INFO] npm registry before override: https://registry.npmjs.org/
+[PASS] npm is configured to use the public registry for this run.
+
+[INFO] Preparing JavaScript dependencies.
+
+[INFO] Checking access to the public npm registry.
+[PASS] Public npm registry is reachable.
+
+[INFO] Installing pinned JavaScript dependencies from registry.npmjs.org.
+
+added 136 packages in 1m
+[PASS] JavaScript dependencies are ready.
+[PASS] Selected the first prefunded OffCKB account: ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvwg2cen8extgq8s5puft8vf40px3f599cytcyd8
+
+[INFO] Starting a local OffCKB blockchain. The first launch may download the CKB binary.
+[PASS] OffCKB RPC is responding at http://127.0.0.1:28114.
+
+[INFO] Exporting OffCKB devnet system Script information.
+(node:2399) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[PASS] Devnet system Scripts exported.
+
+[INFO] Deriving the issuer Lock Script hash and updating .env.
+
+> ckb-degree-proof@2.1.1 offckb:configure
+> node src/cli/offckb-local.js configure
+
+{
+  "address": "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvwg2cen8extgq8s5puft8vf40px3f599cytcyd8",
+  "lockScript": {
+    "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+    "hashType": "type",
+    "args": "0x8e42b1999f265a0078503c4acec4d5e134534297"
+  },
+  "lockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+}
+(node:2421) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[PASS] All required .env values and formats are valid.
+[PASS] Node.js v22.22.2 is supported.
+[PASS] CKB RPC responded.
+
+[INFO] Running the complete offline application test suite and credential demo.
+
+> ckb-degree-proof@2.1.1 test
+> node --test --test-reporter=spec
+
+✔ root one-command launcher and stop wrapper are executable (8.447797ms)
+✔ launcher help promises only local automatic account setup (89.753456ms)
+✔ status mode is read-only and succeeds before setup (795.354042ms)
+✔ launcher reuses compatible tools and installs only when missing (5.99626ms)
+✔ automatic launcher forces a loopback-only CKB RPC (3.586657ms)
+✔ launcher manages only project-owned services through PID files (4.056112ms)
+✔ service shutdown verifies process identity before sending signals (6.515633ms)
+✔ local chain runner persists its node when requested (5.958172ms)
+✔ automatic wallet setup extracts a local prefunded account and protects the key (5.033976ms)
+✔ one credential ID is used for both off-chain and on-chain lifecycle steps (62.997754ms)
+✔ launcher exports and independently verifies the integrated public proof (3.875871ms)
+✔ environment files are parsed as data rather than executed as shell code (40.856876ms)
+✔ runtime keys, logs, deployment files and PID files remain Git ignored (3.725637ms)
+✔ Cell decoder CLI returns canonical JSON for a valid vector (282.335588ms)
+✔ Cell decoder CLI returns non-zero for non-canonical data (214.984813ms)
+✔ proof verifier CLI accepts a valid proof and rejects a modified one (651.750436ms)
+✔ test-vector generator is deterministic (169.783862ms)
+✔ community JSON Schemas declare draft 2020-12 and stable identifiers (59.277503ms)
+✔ decoder manifest is explicitly an example and requires deployment replacement (31.989637ms)
+✔ community corpus has stable metadata and both valid and invalid vectors (2.197525ms)
+✔ application and standalone community decoders agree on every vector (6.20497ms)
+✔ valid credential passes all requested checks and omits raw identity (40.112729ms)
+✔ modified document is rejected (14.929863ms)
+✔ tampered signed payload is rejected (13.988931ms)
+✔ unknown issuer is rejected (13.561122ms)
+✔ revoked credential is rejected and binary matches Rust layout (16.890305ms)
+✔ duplicate mint and second revocation are rejected (20.070311ms)
+✔ local verifier detects attempted reactivation after a signed revocation (16.580893ms)
+✔ invalid revocation timestamp leaves the ledger unchanged (12.466784ms)
+✔ revocation event from another credential is rejected (22.59533ms)
+✔ invalid calendar date is rejected during mint (6.098403ms)
+✔ decoder manifest binds recognition to a deployed Type Script (3.118644ms)
+✔ decoder manifest includes RPC only when explicitly requested (1.718164ms)
+✔ decoder manifest rejects malformed deployment metadata (4.610206ms)
+✔ environment parser handles comments and quoted values (4.029759ms)
+✔ environment validator rejects missing and malformed lock hash (3.547896ms)
+✔ public inspector environment does not require private-key settings (4.988675ms)
+✔ static path resolver blocks traversal and accepts files inside public root (3.439789ms)
+✔ health endpoint advertises read-only community formats and security headers (99.459195ms)
+✔ inspect endpoint accepts canonical JSON and handles an uploaded document (40.059061ms)
+✔ API rejects non-JSON requests and invalid base64 (24.874417ms)
+✔ API enforces decoded document and request-body limits (29.094708ms)
+✔ Cell decoder endpoint returns canonical and validation-error states (35.369024ms)
+✔ proof endpoint accepts untampered proof and rejects modified proof (40.342888ms)
+✔ static files are served but unsupported methods and missing paths are rejected (33.91805ms)
+(node:3505) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CCC derives the expected first OffCKB account Lock Script hash (9643.714122ms)
+✔ OffCKB system-script parser produces CCC-compatible known Script keys (7.910823ms)
+✔ OffCKB parser rejects missing required system Scripts (4.894419ms)
+✔ deployment parser accepts the OffCKB scripts.json structure (6.805713ms)
+✔ deployment parser accepts a binary-suffixed contract name (2.162323ms)
+✔ proof verifier accepts an untampered canonical proof (9.04373ms)
+✔ proof verifier detects content tampering (1.052789ms)
+✔ proof verifier detects unsupported schema (1.174649ms)
+✔ proof verifier reports sensitive fields and local absolute paths (1.817614ms)
+✔ proof verifier rejects invalid timestamps and non-object inputs (1.223316ms)
+✔ public inspector verifies an active credential without private-key settings (38.425055ms)
+✔ public inspector reports a revoked but cryptographically intact credential (25.499107ms)
+✔ public inspector detects duplicate live chain records (13.459749ms)
+✔ public inspector can inspect metadata without a document but does not call it fully valid (13.0279ms)
+✔ public proof export writes the same proof object (15.928118ms)
+✔ offline mode never claims complete on-chain validation (11.993673ms)
+✔ public proof removes RPC credentials and internal error details (10.938095ms)
+✔ on-chain record without a public credential is reported explicitly (9.64476ms)
+✔ record summary distinguishes active, revoked, invalid and duplicate states (5.195079ms)
+✔ record validator enforces state-specific fields and issuer binding (2.518575ms)
+✔ credential hash is deterministic and trims surrounding whitespace (5.582396ms)
+✔ active record round-trips through Buffer and hex (3.720636ms)
+✔ revoked record exposes reason name and ISO timestamp (1.949669ms)
+✔ hash-based encoder matches credential-ID encoder (1.269001ms)
+✔ validator reports expected credential and issuer mismatches (1.603709ms)
+✔ validator rejects non-canonical state fields (2.361128ms)
+✔ decoder rejects malformed hex and incorrect length (1.884074ms)
+✔ encoder rejects invalid status, hash, reason and timestamp (1.103861ms)
+✔ reason registry distinguishes standard and extension codes (1.139158ms)
+ℹ tests 74
+ℹ suites 0
+ℹ pass 74
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10496.862348
+
+> ckb-degree-proof@2.1.1 demo
+> node src/cli/demo.js
+
+
+Credential ID for this complete demo: CKB-DEGREE-LOCAL-20260722212653-734
+
+=== 1. MINT ===
+Minted CKB-DEGREE-LOCAL-20260722212653-734 as ACTIVE.
+
+=== 2. VERIFY ORIGINAL ===
+[PASS] credential_exists
+[PASS] credential_binding
+[PASS] schema
+[PASS] trusted_issuer
+[PASS] issuer_key
+[PASS] credential_signature
+[PASS] document_hash
+[PASS] recipient_binding
+[PASS] identity_commitment
+[PASS] revocation_status
+RESULT: VALID
+
+=== 3. VERIFY MODIFIED DOCUMENT ===
+[PASS] credential_exists
+[PASS] credential_binding
+[PASS] schema
+[PASS] trusted_issuer
+[PASS] issuer_key
+[PASS] credential_signature
+[FAIL] document_hash
+[PASS] revocation_status
+RESULT: INVALID
+
+=== 4. REVOKE ===
+Revocation recorded and 75-byte CKB Cell data generated.
+
+=== 5. VERIFY AFTER REVOCATION ===
+[PASS] credential_exists
+[PASS] credential_binding
+[PASS] schema
+[PASS] trusted_issuer
+[PASS] issuer_key
+[PASS] credential_signature
+[PASS] document_hash
+[PASS] revocation_schema
+[PASS] revocation_credential_binding
+[PASS] revocation_issuer_binding
+[PASS] revocation_reason
+[PASS] revocation_timestamp
+[PASS] revocation_signature
+[FAIL] revocation_status
+RESULT: INVALID
+
+Demo complete. Expected results: original valid, modified invalid, revoked invalid.
+
+[INFO] Formatting, building, and testing the Rust CKB Type Script.
+[PASS] Using CKB C toolchain: riscv64-unknown-elf-gcc / riscv64-unknown-elf-ar
+Cleaning build/release directory...
+mkdir -p build/release
+make[1]: Entering directory '<PROJECT_ROOT>/digital-credentials-workspace/contracts/credential-revocation'
+RUSTFLAGS="-C target-feature=+zba,+zbb,+zbc,+zbs -C passes=lower-atomic -C debug-assertions" TARGET_CC="riscv64-unknown-elf-gcc" TARGET_AR="riscv64-unknown-elf-ar" \
+        cargo build --target=riscv64imac-unknown-none-elf --release 
+    Updating crates.io index
+     Locking 207 packages to latest compatible versions
+      Adding ckb-std v0.17.2 (available: v1.1.0)
+      Adding ckb-testtool v0.15.1 (available: v1.1.1)
+      Adding ckb-vm v0.24.13 (available: v0.24.14)
+      Adding ckb-vm-definitions v0.24.13 (available: v0.24.14)
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding goblin v0.4.0 (available: v0.4.3)
+  Downloaded cc v1.3.0
+  Downloaded 1 crate (95.5KiB) in 0.40s
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.9
+   Compiling cfg-if v1.0.4
+   Compiling blake2b-ref v0.3.1
+   Compiling bytes v1.12.1
+   Compiling buddy-alloc v0.6.0
+   Compiling gcd v2.3.0
+   Compiling cc v1.3.0
+   Compiling ckb-hash v0.200.0
+   Compiling molecule v0.8.0
+   Compiling ckb-gen-types v0.200.0
+   Compiling ckb-std v0.17.2
+   Compiling credential-revocation v1.1.0 (<PROJECT_ROOT>/digital-credentials-workspace/contracts/credential-revocation)
+    Finished `release` profile [optimized] target(s) in 30.83s
+Copying binary credential-revocation to build directory
+make[1]: Leaving directory '<PROJECT_ROOT>/digital-credentials-workspace/contracts/credential-revocation'
+cargo test 
+  Downloaded futures-task v0.3.33
+  Downloaded futures-macro v0.3.33
+  Downloaded futures-io v0.3.33
+  Downloaded futures-sink v0.3.33
+  Downloaded proc-macro2 v1.0.107
+  Downloaded tokio-macros v2.7.1
+  Downloaded bitcoin-internals v0.6.0
+  Downloaded fastrand v2.5.0
+  Downloaded futures-core v0.3.33
+  Downloaded futures-executor v0.3.33
+  Downloaded quote v1.0.47
+  Downloaded bitcoin-consensus-encoding v1.1.0
+  Downloaded xxhash-rust v0.8.18
+  Downloaded anyhow v1.0.104
+  Downloaded hex-conservative v1.2.0
+  Downloaded simd-adler32 v0.3.10
+  Downloaded tokio-stream v0.1.19
+  Downloaded bitflags v2.13.1
+  Downloaded serde_core v1.0.229
+  Downloaded futures v0.3.33
+  Downloaded futures-channel v0.3.33
+  Downloaded serde_derive v1.0.229
+  Downloaded serde v1.0.229
+  Downloaded futures-util v0.3.33
+  Downloaded serde_json v1.0.151
+  Downloaded zerocopy v0.8.55
+  Downloaded syn v3.0.3
+  Downloaded syn v2.0.119
+  Downloaded libc v0.2.189
+  Downloaded tokio v1.53.1
+  Downloaded 30 crates (3.6MiB) in 2.92s
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.4
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling syn v1.0.109
+   Compiling zerocopy v0.8.55
+   Compiling getrandom v0.1.16
+   Compiling thiserror v1.0.69
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.9
+   Compiling libc v0.2.189
+   Compiling cc v1.3.0
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling syn v2.0.119
+   Compiling syn v3.0.3
+   Compiling itoa v1.0.18
+   Compiling faster-hex v0.6.1
+   Compiling ckb_schemars v0.8.22
+   Compiling rand_core v0.5.1
+   Compiling heapsize v0.4.2
+   Compiling dyn-clone v1.0.20
+   Compiling rand_pcg v0.2.1
+   Compiling blake2b-rs v0.2.0
+   Compiling memchr v2.8.3
+   Compiling cty v0.2.2
+   Compiling serde_derive_internals v0.26.0
+   Compiling serde_derive v1.0.229
+   Compiling ppv-lite86 v0.2.21
+   Compiling ckb_schemars_derive v0.8.22
+   Compiling numext-constructor v0.1.6
+   Compiling rand_chacha v0.2.2
+   Compiling anyhow v1.0.104
+   Compiling unicode-xid v0.2.6
+   Compiling rand v0.7.3
+   Compiling siphasher v0.3.11
+   Compiling blake2b-ref v0.3.1
+   Compiling thiserror-impl v1.0.69
+   Compiling derive_more-impl v1.0.0
+   Compiling version_check v0.9.5
+   Compiling paste v1.0.15
+   Compiling crossbeam-utils v0.8.22
+   Compiling ckb-hash v0.200.0
+   Compiling phf_shared v0.8.0
+   Compiling crc32fast v1.5.0
+   Compiling crossbeam-channel v0.5.16
+   Compiling derive_more v1.0.0
+   Compiling generic-array v0.14.7
+   Compiling golomb-coded-set v0.2.1
+   Compiling merkle-cbt v0.3.2
+   Compiling ckb-merkle-mountain-range v0.5.2
+   Compiling bytes v1.12.1
+   Compiling ckb-occupied-capacity-core v0.200.0
+   Compiling ckb-channel v0.200.0
+   Compiling bit-vec v0.6.3
+   Compiling ckb-occupied-capacity-macros v0.200.0
+   Compiling simd-adler32 v0.3.10
+   Compiling ckb-constant v0.200.0
+   Compiling adler2 v2.0.1
+   Compiling miniz_oxide v0.8.9
+   Compiling molecule v0.8.0
+   Compiling numext-fixed-uint-core v0.1.6
+   Compiling same-file v1.0.6
+   Compiling typenum v1.20.1
+   Compiling ckb-occupied-capacity v0.200.0
+   Compiling ckb-fixed-hash-core v0.200.0
+   Compiling ckb-error v0.200.0
+   Compiling walkdir v2.5.0
+   Compiling flate2 v1.1.9
+   Compiling phf_generator v0.8.0
+   Compiling phf_codegen v0.8.0
+   Compiling getrandom v0.2.17
+   Compiling ckb-fixed-hash-macros v0.200.0
+   Compiling once_cell v1.21.4
+   Compiling includedir_codegen v0.6.0
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling pin-project-lite v0.2.17
+   Compiling futures-core v0.3.33
+   Compiling digest v0.10.7
+   Compiling phf v0.8.0
+   Compiling log v0.4.33
+   Compiling ckb-system-scripts v0.5.4
+   Compiling futures-sink v0.3.33
+   Compiling rustix v1.1.4
+   Compiling cpufeatures v0.2.17
+   Compiling futures-channel v0.3.33
+   Compiling includedir v0.6.0
+   Compiling futures-macro v0.3.33
+   Compiling secp256k1-sys v0.10.1
+   Compiling ckb-fixed-hash v0.200.0
+   Compiling futures-task v0.3.33
+   Compiling slab v0.4.12
+   Compiling linux-raw-sys v0.12.1
+   Compiling bitflags v2.13.1
+   Compiling getrandom v0.4.3
+   Compiling futures-io v0.3.33
+   Compiling rand_core v0.6.4
+   Compiling futures-util v0.3.33
+   Compiling tokio-macros v2.7.1
+   Compiling miette-derive v5.10.0
+   Compiling byteorder v1.5.0
+   Compiling unicode-width v0.1.14
+   Compiling tokio v1.53.1
+   Compiling rand_chacha v0.3.1
+   Compiling miette v5.10.0
+   Compiling numext-fixed-uint-hack v0.1.6
+   Compiling sha2 v0.10.9
+   Compiling sha-1 v0.10.1
+   Compiling scroll_derive v0.10.5
+   Compiling base64 v0.21.7
+   Compiling futures-executor v0.3.33
+   Compiling hex v0.4.3
+   Compiling xxhash-rust v0.8.18
+   Compiling fastrand v2.5.0
+   Compiling futures v0.3.33
+   Compiling scroll v0.10.2
+   Compiling ssri v9.2.0
+   Compiling tempfile v3.27.0
+   Compiling rand v0.8.7
+   Compiling reflink-copy v0.1.30
+   Compiling sha1 v0.10.7
+   Compiling numext-fixed-uint v0.1.6
+   Compiling ckb-gen-types v0.200.0
+   Compiling ckb-rational v0.200.0
+   Compiling ahash v0.7.8
+   Compiling memmap2 v0.5.10
+   Compiling plain v0.2.3
+   Compiling either v1.16.0
+   Compiling eaglesong v0.1.0
+   Compiling ckb-logger v0.200.0
+   Compiling toml v0.5.11
+   Compiling ckb-vm v0.24.13
+   Compiling convert_case v0.4.0
+   Compiling tokio-stream v0.1.19
+   Compiling secp256k1 v0.30.0
+   Compiling cacache v13.1.0
+   Compiling derive_more v0.99.20
+   Compiling ckb-crypto v0.200.0
+   Compiling goblin v0.2.3
+   Compiling goblin v0.4.0
+   Compiling ckb-vm-definitions v0.24.13
+   Compiling ckb-script v0.200.0
+   Compiling hashbrown v0.12.3
+   Compiling ckb-std v0.17.2
+   Compiling bitflags v1.3.2
+   Compiling ckb-verification-traits v0.200.0
+   Compiling lru v0.7.8
+   Compiling buddy-alloc v0.6.0
+   Compiling gcd v2.3.0
+   Compiling ckb-systemtime v0.200.0
+   Compiling ckb-always-success-script v0.0.1
+   Compiling lazy_static v1.5.0
+   Compiling ckb-types v0.200.0
+   Compiling credential-revocation v1.1.0 (<PROJECT_ROOT>/digital-credentials-workspace/contracts/credential-revocation)
+   Compiling ckb-jsonrpc-types v0.200.0
+   Compiling ckb-traits v0.200.0
+   Compiling ckb-pow v0.200.0
+   Compiling ckb-dao-utils v0.200.0
+   Compiling ckb-resource v0.200.0
+   Compiling ckb-chain-spec v0.200.0
+   Compiling ckb-mock-tx-types v0.200.1
+   Compiling ckb-dao v0.200.0
+   Compiling ckb-verification v0.200.0
+   Compiling ckb-testtool v0.15.1
+   Compiling tests v1.0.0 (<PROJECT_ROOT>/digital-credentials-workspace/tests)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 17s
+     Running unittests src/lib.rs (target/debug/deps/credential_revocation-772e79d241a03e4d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/credential_revocation-1b5008f0047b17a2)
+
+running 5 tests
+test unit_tests::creation_requires_clean_active_state ... ok
+test unit_tests::update_is_irreversible ... ok
+test unit_tests::update_rejects_changed_immutable_fields ... ok
+test unit_tests::update_requires_reason_and_timestamp ... ok
+test unit_tests::common_validation_rejects_version_status_and_issuer ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/tests-5dcc840d10a96e86)
+
+running 18 tests
+test tests::reject_creation_with_foreign_output_lock ... ok
+test tests::create_active_record ... ok
+test tests::reject_invalid_version ... ok
+test tests::reject_invalid_data_length ... ok
+test tests::reject_invalid_status ... ok
+test tests::reject_credential_id_change ... ok
+test tests::reject_initial_revoked_state ... ok
+test tests::reject_immutable_issuer_change_on_update ... ok
+test tests::reject_missing_timestamp ... ok
+test tests::reject_record_destruction ... ok
+test tests::reject_missing_reason_code ... ok
+test tests::reject_record_issuer_mismatch ... ok
+test tests::reject_multiple_output_records ... ok
+test tests::reject_unauthorized_creation ... ok
+test tests::reject_reactivation ... ok
+test tests::reject_multiple_input_records ... ok
+test tests::reject_update_that_changes_output_lock ... ok
+test tests::revoke_active_record ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+   Doc-tests credential_revocation
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests tests
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+[PASS] Rust contract built and all positive/negative tests passed.
+
+[INFO] Deploying the Rust contract to local OffCKB without a confirmation prompt.
+🚀 Preparing to deploy 1 contract(s):
+   📄 credential-revocation
+
+   📁 Deployment artifacts will be saved to: <PROJECT_ROOT>/deployment
+   🌐 Network: devnet
+   🔑 Using custom private key
+   🔄 Type ID: disabled (immutable)
+(node:22146) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+contract credential-revocation deployed, tx hash: 0xd832432d2d6b6b4c0481c3b29ffaa30ae250d8f211289bf80a75882e6885e125
+wait for tx confirmed on-chain...
+tx committed.
+
+📦 Saving deployment artifacts for 1 contract(s)...
+- 📄 Saving artifacts for credential-revocation...
+- credential-revocation deployment.toml file <PROJECT_ROOT>/deployment/devnet/credential-revocation/deployment.toml generated successfully.
+- Migration json file <PROJECT_ROOT>/deployment/devnet/credential-revocation/migrations/2026-07-22-213223.json generated successfully.
+- ✅ Successfully saved artifacts for credential-revocation
+- 📄 Script info file generated: <PROJECT_ROOT>/deployment/scripts.json
+
+🎉 All deployment artifacts saved successfully!
+[PASS] Contract deployment completed.
+
+[INFO] Running the real on-chain ACTIVE -> REVOKED lifecycle.
+
+> ckb-degree-proof@2.1.1 offckb:lifecycle
+> node src/cli/offckb-local.js lifecycle CKB-DEGREE-LOCAL-20260722212653-734
+
+(node:23613) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+  "credentialId": "CKB-DEGREE-LOCAL-20260722212653-734",
+  "active": {
+    "credentialId": "CKB-DEGREE-LOCAL-20260722212653-734",
+    "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+    "status": "ACTIVE",
+    "txHash": "0x2c35eca2b3ae9ce5b73dd5ed08c530c1afb13722ff24f1d964122bf40fc94e8d",
+    "outPoint": {
+      "txHash": "0x2c35eca2b3ae9ce5b73dd5ed08c530c1afb13722ff24f1d964122bf40fc94e8d",
+      "index": 0
+    },
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "activeCheck": {
+    "found": true,
+    "status": "ACTIVE",
+    "activeCount": 1,
+    "revokedCount": 0,
+    "invalidCount": 0,
+    "totalCount": 1,
+    "records": [
+      {
+        "outPoint": {
+          "txHash": "0x2c35eca2b3ae9ce5b73dd5ed08c530c1afb13722ff24f1d964122bf40fc94e8d",
+          "index": 0
+        },
+        "record": {
+          "version": 1,
+          "status": 0,
+          "statusName": "ACTIVE",
+          "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+          "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+          "reasonCode": 0,
+          "reasonName": "NONE",
+          "revokedAt": "0",
+          "revokedAtIso": null,
+          "canonical": true,
+          "errors": []
+        },
+        "errors": []
+      }
+    ],
+    "outPoint": {
+      "txHash": "0x2c35eca2b3ae9ce5b73dd5ed08c530c1afb13722ff24f1d964122bf40fc94e8d",
+      "index": 0
+    },
+    "record": {
+      "version": 1,
+      "status": 0,
+      "statusName": "ACTIVE",
+      "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+      "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+      "reasonCode": 0,
+      "reasonName": "NONE",
+      "revokedAt": "0",
+      "revokedAtIso": null,
+      "canonical": true,
+      "errors": []
+    },
+    "readOnly": true,
+    "network": "devnet",
+    "rpcUrl": "http://127.0.0.1:28114",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "revocation": {
+    "credentialId": "CKB-DEGREE-LOCAL-20260722212653-734",
+    "status": "REVOKED",
+    "reasonCode": 1,
+    "revokedAt": "1784730769",
+    "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+    "outPoint": {
+      "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+      "index": 0
+    },
+    "spentActiveOutPoint": {
+      "txHash": "0x2c35eca2b3ae9ce5b73dd5ed08c530c1afb13722ff24f1d964122bf40fc94e8d",
+      "index": 0
+    }
+  },
+  "finalCheck": {
+    "found": true,
+    "status": "REVOKED",
+    "activeCount": 0,
+    "revokedCount": 1,
+    "invalidCount": 0,
+    "totalCount": 1,
+    "records": [
+      {
+        "outPoint": {
+          "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+          "index": 0
+        },
+        "record": {
+          "version": 1,
+          "status": 1,
+          "statusName": "REVOKED",
+          "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+          "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+          "reasonCode": 1,
+          "reasonName": "ADMINISTRATIVE_CORRECTION",
+          "revokedAt": "1784730769",
+          "revokedAtIso": "2026-07-22T14:32:49.000Z",
+          "canonical": true,
+          "errors": []
+        },
+        "errors": []
+      }
+    ],
+    "outPoint": {
+      "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+      "index": 0
+    },
+    "record": {
+      "version": 1,
+      "status": 1,
+      "statusName": "REVOKED",
+      "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+      "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+      "reasonCode": 1,
+      "reasonName": "ADMINISTRATIVE_CORRECTION",
+      "revokedAt": "1784730769",
+      "revokedAtIso": "2026-07-22T14:32:49.000Z",
+      "canonical": true,
+      "errors": []
+    },
+    "readOnly": true,
+    "network": "devnet",
+    "rpcUrl": "http://127.0.0.1:28114",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "typeScript": {
+      "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+      "hashType": "data2",
+      "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+    }
+  },
+  "completedAt": "2026-07-22T14:33:06.987Z"
+}
+
+[INFO] Checking the final live Cell state from the OffCKB indexer.
+(node:27131) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+  "found": true,
+  "status": "REVOKED",
+  "activeCount": 0,
+  "revokedCount": 1,
+  "invalidCount": 0,
+  "totalCount": 1,
+  "records": [
+    {
+      "outPoint": {
+        "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+        "index": 0
+      },
+      "record": {
+        "version": 1,
+        "status": 1,
+        "statusName": "REVOKED",
+        "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+        "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+        "reasonCode": 1,
+        "reasonName": "ADMINISTRATIVE_CORRECTION",
+        "revokedAt": "1784730769",
+        "revokedAtIso": "2026-07-22T14:32:49.000Z",
+        "canonical": true,
+        "errors": []
+      },
+      "errors": []
+    }
+  ],
+  "outPoint": {
+    "txHash": "0x8e4ba3aca6f88bb15f5c8fe4536a22a3f5536b6625520efcd3350dcfcbd76f71",
+    "index": 0
+  },
+  "record": {
+    "version": 1,
+    "status": 1,
+    "statusName": "REVOKED",
+    "credentialHash": "0xf5bb40418b83953c8e15b03693f1651e8a49a02a23a56788a0f53cf0c29def37",
+    "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+    "reasonCode": 1,
+    "reasonName": "ADMINISTRATIVE_CORRECTION",
+    "revokedAt": "1784730769",
+    "revokedAtIso": "2026-07-22T14:32:49.000Z",
+    "canonical": true,
+    "errors": []
+  },
+  "readOnly": true,
+  "network": "devnet",
+  "rpcUrl": "http://127.0.0.1:28114",
+  "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+  "typeScript": {
+    "codeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+    "hashType": "data2",
+    "args": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653"
+  }
+}
+[PASS] The local chain contains the final REVOKED record for the tested Cell lineage.
+70b6d8d0ea6ca898921831fef16d95a9b7078560a4d70092c278f7694d395a01  <PROJECT_ROOT>/digital-credentials-workspace/build/release/credential-revocation
+
+============================================================
+LOCAL OFFCKB LEVEL-2 RUN COMPLETED SUCCESSFULLY
+============================================================
+Network:                 local OffCKB devnet only
+RPC:                     http://127.0.0.1:28114
+Credential ID:           CKB-DEGREE-LOCAL-20260722212653-734
+Off-chain/on-chain ID:    identical for the complete automated run
+Issuer address:          ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvwg2cen8extgq8s5puft8vf40px3f599cytcyd8
+Issuer Lock Script hash: 0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653
+Deployment record:       deployment/scripts.json
+Lifecycle evidence:      data/offckb-chain-state.json
+Contract checksum:       data/credential-revocation.sha256
+Node log:                data/logs/offckb-node.log
+
+No testnet or mainnet was used.
+The private development key is stored locally in:
+  secrets/offckb-issuer-private-key
+It is ignored by Git and must never be used with real assets.
+============================================================
+
+[INFO] Starting the read-only public inspector without loading issuer private keys.
+
+> ckb-degree-proof@2.1.1 inspector:serve
+> node src/cli/public-inspector-server.js
+
+CKB Degree Proof inspector: http://127.0.0.1:4173
+Network: devnet
+Read-only service: no issuer private key is loaded.
+
+[ERROR] Inspector health endpoint did not become ready.

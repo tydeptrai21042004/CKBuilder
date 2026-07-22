@@ -335,7 +335,6 @@ fn reject_missing_timestamp() {
     );
 }
 
-
 #[test]
 fn reject_invalid_version() {
     let mut s = setup();
@@ -343,7 +342,13 @@ fn reject_invalid_version() {
     let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
     let mut data = record(s.issuer_hash, 7, ACTIVE, 0, 0).to_vec();
     data[0] = 2;
-    verify_error(s, vec![input], vec![output], vec![Bytes::from(data)], ERR_INVALID_VERSION);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![Bytes::from(data)],
+        ERR_INVALID_VERSION,
+    );
 }
 
 #[test]
@@ -353,7 +358,13 @@ fn reject_invalid_status() {
     let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
     let mut data = record(s.issuer_hash, 7, ACTIVE, 0, 0).to_vec();
     data[1] = 9;
-    verify_error(s, vec![input], vec![output], vec![Bytes::from(data)], ERR_INVALID_STATUS);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![Bytes::from(data)],
+        ERR_INVALID_STATUS,
+    );
 }
 
 #[test]
@@ -362,7 +373,13 @@ fn reject_record_issuer_mismatch() {
     let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
     let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
     let data = record([9u8; 32], 7, ACTIVE, 0, 0);
-    verify_error(s, vec![input], vec![output], vec![data], ERR_ISSUER_MISMATCH);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![data],
+        ERR_ISSUER_MISMATCH,
+    );
 }
 
 #[test]
@@ -371,7 +388,13 @@ fn reject_creation_with_foreign_output_lock() {
     let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
     let output = output_cell(s.other_lock.clone(), Some(s.type_script.clone()));
     let data = record(s.issuer_hash, 7, ACTIVE, 0, 0);
-    verify_error(s, vec![input], vec![output], vec![data], ERR_OUTPUT_LOCK_MISMATCH);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![data],
+        ERR_OUTPUT_LOCK_MISMATCH,
+    );
 }
 
 #[test]
@@ -385,7 +408,13 @@ fn reject_update_that_changes_output_lock() {
     );
     let output = output_cell(s.other_lock.clone(), Some(s.type_script.clone()));
     let data = record(s.issuer_hash, 7, REVOKED, 1, 100);
-    verify_error(s, vec![input], vec![output], vec![data], ERR_OUTPUT_LOCK_MISMATCH);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![data],
+        ERR_OUTPUT_LOCK_MISMATCH,
+    );
 }
 
 #[test]

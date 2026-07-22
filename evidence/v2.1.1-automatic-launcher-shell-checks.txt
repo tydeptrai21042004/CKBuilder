@@ -1,0 +1,21 @@
+$ bash -n run-full-project.sh
+[PASS] root launcher syntax
+$ bash -n stop-full-project.sh
+[PASS] stop wrapper syntax
+$ bash -n scripts/setup-and-run-full.sh
+[PASS] setup launcher syntax
+$ bash -n scripts/local-offckb-all.sh
+[PASS] local OffCKB runner syntax
+$ bash run-full-project.sh --status
+
+CKB Degree Proof service status
+Project root:                <PROJECT_ROOT>
+.env:                        missing
+Node.js:                     v22.16.0
+npm:                         10.9.2
+Rust:                        missing
+RISC-V GCC:                  missing
+OffCKB RPC:                  stopped
+Managed OffCKB PID:          none
+Inspector API:               stopped
+Managed inspector PID:       none

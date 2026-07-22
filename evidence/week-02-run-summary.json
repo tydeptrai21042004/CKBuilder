@@ -1,0 +1,66 @@
+{
+  "schema": "ckb-degree-week-02-evidence/v1",
+  "recordedAt": "2026-07-22T14:55:58.434Z",
+  "projectVersion": "2.1.2",
+  "network": "local-offckb-devnet",
+  "rpcUrl": "http://127.0.0.1:28114",
+  "inspectorUrl": "http://127.0.0.1:4173",
+  "credentialId": "CKB-DEGREE-LOCAL-20260722215119-641",
+  "testResults": {
+    "nodeJs": {
+      "passed": 74,
+      "failed": 0,
+      "skipped": 0
+    },
+    "rustUnit": {
+      "passed": 5,
+      "failed": 0
+    },
+    "ckbIntegration": {
+      "passed": 18,
+      "failed": 0
+    }
+  },
+  "deployment": {
+    "transactionHash": "0x6c4be1ad765bf73df3ea12158e1843a0ed4090bedc5170d03647a09a335b97c4",
+    "contractCodeHash": "0x92d8aca12b8e125b369f717c6e02a076d76500e508e1bdfa0ff0baab40c310a6",
+    "hashType": "data2",
+    "binarySha256": "70b6d8d0ea6ca898921831fef16d95a9b7078560a4d70092c278f7694d395a01"
+  },
+  "lifecycle": {
+    "activeTransactionHash": "0x7088382fe933c059efd54069c3fe94c65d23307b9f2774179e2e35ca1791f9e3",
+    "revokedTransactionHash": "0x9f4333b2425afbb65e40ae06f62c143f23d024b4f5a0f87b79c964e26189be78",
+    "finalStatus": "REVOKED",
+    "activeCount": 0,
+    "revokedCount": 1,
+    "invalidCount": 0,
+    "totalCount": 1
+  },
+  "issuerLockHash": "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653",
+  "publicProof": {
+    "outcome": "REVOKED",
+    "readOnly": true,
+    "privateKeyRequired": false,
+    "stateConsistency": {
+      "consistent": true,
+      "code": "STATE_CONSISTENT",
+      "message": "Off-chain and live on-chain status both report REVOKED."
+    },
+    "proofDigest": "0xdfccadca6a43a5e6d39d24501ff842121bb0e6551585780f178be71e98fe717e"
+  },
+  "evidence": {
+    "screenshots": [
+      "screenshots/04-automatic-end-to-end-success.png",
+      "screenshots/05-local-offckb-lifecycle-success.png",
+      "screenshots/06-final-revoked-cell.png"
+    ],
+    "fullSanitizedLog": "evidence/automatic-end-to-end-run-2026-07-22-sanitized.log",
+    "chainState": "data/offckb-chain-state.json",
+    "publicProof": "data/automatic-public-verification-proof.json",
+    "launchSummary": "data/run/launch-summary.json"
+  },
+  "limitations": [
+    "All transactions are from an ephemeral local OffCKB devnet and are not public explorer links.",
+    "The Type Script enforces irreversibility for one Cell lineage; global uniqueness across independent lineages remains outside the current contract guarantee."
+  ]
+}

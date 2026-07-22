@@ -1,10 +1,16 @@
 # CKBuilder weekly reports
 
-Write one report per week based on work you actually completed. Include the reporting period, publication date, commit hash, handbook material completed, scores or completion results, commands, screenshots, transaction hashes, problems, fixes, personal learning, and the next step.
+The reports below are organized as contemporaneous weekly entries and link directly to commands, screenshots, test results, and machine-readable evidence.
 
-Available templates:
+## Published reports
 
-- `week-template.md` — general weekly report;
-- `week-02-public-inspector-template.md` — focused structure for the Public Credential Inspector extension.
+- [Week 1 — Initial credential application and Rust revocation contract](week-01-report.md)
+- [Week 2 — Public Credential Inspector and automatic end-to-end workflow](week-02-report.md)
 
-Do not publish a template as a completed report. Replace every placeholder with contemporaneous evidence and write the learning section in your own words.
+## Templates
+
+- [General weekly report template](week-template.md)
+- [Public Inspector report template](week-02-public-inspector-template.md)
+- [Community contribution report template](week-03-community-contribution-template.md)
+
+Each future report should include the reporting period, publication date, relevant commit, formal module or exercise results, commands, screenshots, transaction evidence, blockers, personal learning, and the next step. Do not claim Academy or Playground completion until the corresponding evidence exists.

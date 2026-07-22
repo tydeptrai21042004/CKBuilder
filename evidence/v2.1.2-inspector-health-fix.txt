@@ -1,0 +1,28 @@
+CKB Degree Proof v2.1.2 inspector readiness regression checks
+Generated: 2026-07-22T14:39:41Z
+
+[PASS] Shell syntax checks
+✔ root one-command launcher and stop wrapper are executable (0.995288ms)
+✔ launcher help promises only local automatic account setup (8.364836ms)
+✔ status mode is read-only and succeeds before setup (84.362072ms)
+✔ inspector health parser accepts the pretty JSON returned by the API (19.240258ms)
+✔ launcher uses the shared whitespace-tolerant health checker (0.301065ms)
+✔ health checker accepts the actual pretty HTTP response format (21.468858ms)
+✔ launcher reuses compatible tools and installs only when missing (0.195648ms)
+✔ automatic launcher forces a loopback-only CKB RPC (0.25737ms)
+✔ launcher manages only project-owned services through PID files (0.414206ms)
+✔ service shutdown verifies process identity before sending signals (0.3264ms)
+✔ local chain runner persists its node when requested (0.245541ms)
+✔ automatic wallet setup extracts a local prefunded account and protects the key (0.147115ms)
+✔ one credential ID is used for both off-chain and on-chain lifecycle steps (0.141945ms)
+✔ launcher exports and independently verifies the integrated public proof (0.095046ms)
+✔ environment files are parsed as data rather than executed as shell code (0.21419ms)
+✔ runtime keys, logs, deployment files and PID files remain Git ignored (0.303721ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 198.724769

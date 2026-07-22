@@ -1,0 +1,7 @@
+[PASS] Bootstrap tools already exist: curl, git, unzip.
+[PASS] Reusing Node v22.16.0 and npm 10.9.2.
+
+[INFO] Running the full local build, tests, automatic wallet setup, deployment, and chain lifecycle.
+[PASS] Base tools are available: Node v22.16.0, npm 10.9.2.
+
+[ERROR] Missing system build tools: riscv64-unknown-elf-gcc riscv64-unknown-elf-ar. Rerun without --no-install.

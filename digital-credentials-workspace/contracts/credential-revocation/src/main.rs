@@ -280,5 +280,4 @@ mod unit_tests {
             Err(Error::RevocationTimestampMissing)
         );
     }
-
 }
