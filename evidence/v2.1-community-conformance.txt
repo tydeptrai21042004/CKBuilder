@@ -1,0 +1,5 @@
+
+> ckb-degree-proof@2.1.0 test:vectors
+> node scripts/verify-test-vectors.js
+
+Verified 6 cross-implementation test vectors.

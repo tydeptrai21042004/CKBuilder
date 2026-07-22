@@ -21,6 +21,7 @@ pub enum Error {
     RevocationReasonMissing = 16,
     RevocationTimestampMissing = 17,
     ImmutableFieldChanged = 18,
+    OutputLockMismatch = 19,
 }
 
 impl From<SysError> for Error {

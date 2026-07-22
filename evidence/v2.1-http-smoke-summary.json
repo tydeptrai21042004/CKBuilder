@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-07-22T13:46:23.768Z",
+  "serverStartedWithoutPrivateKeyFiles": true,
+  "health": {
+    "ok": true,
+    "service": "CKB Degree Proof Public Credential Inspector",
+    "version": "2.1.0",
+    "network": "local",
+    "readOnly": true,
+    "privateKeyRequired": false,
+    "communityFormats": [
+      "ckb-degree-credential-cell/v1",
+      "ckb-degree-public-verification-proof/v2"
+    ]
+  },
+  "decoder": {
+    "canonical": true,
+    "statusName": "ACTIVE",
+    "byteLength": 75,
+    "credentialHash": "0x0f4324ffe3627a7a675ca9c72d83a37f97d70e4ec381eee6c6882fbc5e026fd8",
+    "issuerLockHash": "0x1111111111111111111111111111111111111111111111111111111111111111"
+  }
+}

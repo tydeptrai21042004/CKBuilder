@@ -1,0 +1,59 @@
+
+> ckb-degree-proof@2.1.0 proof:verify
+> node src/cli/verify-public-proof.js /tmp/tmp.nJ1qNBYk4p
+
+{
+  "valid": true,
+  "checks": [
+    {
+      "name": "proof_object",
+      "ok": true,
+      "code": "PROOF_OBJECT_VALID",
+      "message": "Proof is a JSON object."
+    },
+    {
+      "name": "schema",
+      "ok": true,
+      "code": "SCHEMA_SUPPORTED",
+      "message": "Schema ckb-degree-public-verification-proof/v2 is supported."
+    },
+    {
+      "name": "credential_id",
+      "ok": true,
+      "code": "CREDENTIAL_ID_VALID",
+      "message": "Credential ID is present."
+    },
+    {
+      "name": "proof_digest",
+      "ok": true,
+      "code": "PROOF_DIGEST_VALID",
+      "message": "Proof digest matches canonical proof content."
+    },
+    {
+      "name": "read_only_claim",
+      "ok": true,
+      "code": "READ_ONLY_CLAIM_VALID",
+      "message": "Proof declares a read-only, no-private-key inspection."
+    },
+    {
+      "name": "outcome",
+      "ok": true,
+      "code": "OUTCOME_PRESENT",
+      "message": "Outcome is CHAIN_NOT_CHECKED."
+    },
+    {
+      "name": "privacy",
+      "ok": true,
+      "code": "PUBLIC_PROOF_PRIVACY_OK",
+      "message": "No obvious secret fields or absolute local paths were found."
+    },
+    {
+      "name": "generated_at",
+      "ok": true,
+      "code": "GENERATED_AT_VALID",
+      "message": "Generation timestamp is valid."
+    }
+  ],
+  "computedDigest": "0x74c47d2e6e892646acea37ca5ab405be79128f9c55df6f3bd139f9997afc7d9b",
+  "privacyIssues": []
+}

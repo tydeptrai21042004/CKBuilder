@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read-only CKB credential verification, Cell-data decoding, and proof validation.">
+  <title>CKB Degree Proof — Public Inspector</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="eyebrow">CKB Degree Proof</p>
+      <h1>Public Credential Inspector</h1>
+      <p class="lead">Read-only credential, Cell-state, document-integrity, and revocation-history inspection. No wallet or issuer private key is required.</p>
+      <ul class="capabilities" aria-label="Capabilities">
+        <li>Credential verifier</li>
+        <li>75-byte Cell decoder</li>
+        <li>Proof integrity checker</li>
+      </ul>
+    </header>
+
+    <section class="panel" aria-labelledby="credential-heading">
+      <h2 id="credential-heading">1. Inspect a credential</h2>
+      <form id="inspect-form">
+        <label>
+          Credential ID
+          <input id="credential-id" name="credentialId" autocomplete="off" maxlength="256" required placeholder="CKB-DEGREE-2026-0001">
+        </label>
+        <label>
+          Certificate document <span>(optional, used only for SHA-256 comparison)</span>
+          <input id="document" name="document" type="file">
+        </label>
+        <label class="check-row">
+          <input id="offline" type="checkbox">
+          Skip live CKB RPC check
+        </label>
+        <button type="submit">Inspect credential</button>
+      </form>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="result" class="panel hidden" aria-live="polite">
+      <div class="result-head">
+        <div>
+          <p class="eyebrow">Verification outcome</p>
+          <h2 id="outcome"></h2>
+        </div>
+        <button id="download" type="button" class="secondary">Export proof JSON</button>
+      </div>
+
+      <dl class="summary-grid">
+        <div><dt>Off-chain</dt><dd id="offchain"></dd></div>
+        <div><dt>On-chain</dt><dd id="onchain"></dd></div>
+        <div><dt>Document</dt><dd id="document-result"></dd></div>
+        <div><dt>Consistency</dt><dd id="consistency"></dd></div>
+      </dl>
+
+      <h3>ACTIVE → REVOKED history</h3>
+      <ol id="history" class="history"></ol>
+
+      <h3>Verification checks</h3>
+      <div id="checks" class="checks"></div>
+
+      <details>
+        <summary>Raw public proof</summary>
+        <pre id="raw"></pre>
+      </details>
+    </section>
+
+    <section class="panel" aria-labelledby="decoder-heading">
+      <h2 id="decoder-heading">2. Decode credential Cell data</h2>
+      <p class="section-note">Paste the raw 0x-prefixed 75-byte output data. This decoder is independent of issuer keys and RPC access.</p>
+      <form id="decode-form">
+        <label>
+          Cell data
+          <textarea id="cell-data" required spellcheck="false" placeholder="0x0100..."></textarea>
+        </label>
+        <div class="two-column">
+          <label>
+            Expected credential hash <span>(optional)</span>
+            <input id="expected-credential-hash" autocomplete="off" placeholder="0x…">
+          </label>
+          <label>
+            Expected issuer Lock Script hash <span>(optional)</span>
+            <input id="expected-issuer-hash" autocomplete="off" placeholder="0x…">
+          </label>
+        </div>
+        <button type="submit">Decode Cell data</button>
+      </form>
+      <p id="decode-status" role="status" aria-live="polite"></p>
+      <pre id="decode-result" class="hidden"></pre>
+    </section>
+
+    <section class="panel" aria-labelledby="proof-heading">
+      <h2 id="proof-heading">3. Verify an exported proof</h2>
+      <p class="section-note">This recomputes the canonical proof digest and checks for unsupported schemas or obvious privacy leakage.</p>
+      <form id="proof-form">
+        <label>
+          Verification proof JSON
+          <input id="proof-file" type="file" accept="application/json,.json" required>
+        </label>
+        <button type="submit">Verify proof</button>
+      </form>
+      <p id="proof-status" role="status" aria-live="polite"></p>
+      <div id="proof-checks" class="checks"></div>
+    </section>
+
+    <footer>
+      <p><strong>Protocol boundary:</strong> the current Type Script enforces an irreversible transition for one Cell lineage. It does not yet guarantee global uniqueness for newly created Cells with the same credential hash.</p>
+      <p>The binary format, standalone decoder, and deterministic test vectors are published under <code>community/</code> for reuse by CKB tooling.</p>
+    </footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

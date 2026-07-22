@@ -1,0 +1,31 @@
+✔ valid credential passes all requested checks and omits raw identity (9.182038ms)
+✔ modified document is rejected (2.889525ms)
+✔ tampered signed payload is rejected (2.674958ms)
+✔ unknown issuer is rejected (2.497478ms)
+✔ revoked credential is rejected and binary matches Rust layout (4.591298ms)
+✔ duplicate mint and second revocation are rejected (3.861665ms)
+✔ local verifier detects attempted reactivation after a signed revocation (3.679705ms)
+✔ invalid revocation timestamp leaves the ledger unchanged (2.723399ms)
+✔ revocation event from another credential is rejected (4.979793ms)
+✔ invalid calendar date is rejected during mint (1.124428ms)
+✔ environment parser handles comments and quoted values (0.997555ms)
+✔ environment validator rejects missing and malformed lock hash (0.553807ms)
+✔ public inspector environment does not require private-key settings (1.659094ms)
+✔ public inspector verifies an active credential without private-key settings (9.126954ms)
+✔ public inspector reports a revoked but cryptographically intact credential (5.874467ms)
+✔ public inspector detects duplicate live chain records (3.161045ms)
+✔ public inspector can inspect metadata without a document but does not call it fully valid (2.647135ms)
+✔ public proof export writes the same proof object (3.510972ms)
+✔ offline mode never claims complete on-chain validation (2.79291ms)
+✔ public proof removes RPC credentials and internal error details (2.808784ms)
+✔ on-chain record without a public credential is reported explicitly (3.448817ms)
+✔ record summary distinguishes active, revoked, invalid and duplicate states (0.851027ms)
+✔ record validator enforces state-specific fields and issuer binding (0.619962ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110.349204

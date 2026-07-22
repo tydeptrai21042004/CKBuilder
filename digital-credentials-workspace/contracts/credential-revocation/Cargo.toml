@@ -1,9 +1,9 @@
 [package]
 name = "credential-revocation"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 license = "MIT"
-description = "CKB type Script enforcing issuer-authorized, irreversible academic credential revocation."
+description = "CKB Type Script enforcing issuer-authorized, issuer-owned, per-Cell ACTIVE-to-REVOKED academic credential transitions."
 
 [dependencies]
 ckb-std = "=0.17.2"

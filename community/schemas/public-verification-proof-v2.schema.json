@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ckb-degree/schemas/public-verification-proof-v2.schema.json",
+  "title": "CKB Degree public verification proof v2",
+  "type": "object",
+  "required": ["schema", "generatedAt", "credentialId", "readOnly", "privateKeyRequired", "outcome", "proofDigest"],
+  "properties": {
+    "schema": { "const": "ckb-degree-public-verification-proof/v2" },
+    "proofVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "credentialId": { "type": "string", "minLength": 1 },
+    "credentialHash": { "type": "string", "pattern": "^0x[0-9a-f]{64}$" },
+    "network": { "type": "string" },
+    "rpcUrl": { "type": "string" },
+    "readOnly": { "const": true },
+    "privateKeyRequired": { "const": false },
+    "outcome": { "type": "string", "minLength": 1 },
+    "usableAsActiveCredential": { "type": "boolean" },
+    "offChain": { "type": "object" },
+    "onChain": { "type": "object" },
+    "stateConsistency": { "type": "object" },
+    "history": { "type": "object" },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "proofDigest": { "type": "string", "pattern": "^0x[0-9a-f]{64}$" }
+  }
+}

@@ -56,11 +56,14 @@ fn validate_transaction() -> Result<(), Error> {
     match (input_count, output_count) {
         (0, 1) => {
             ensure_authorized(&issuer_hash)?;
+            ensure_group_lock(0, Source::GroupOutput, &issuer_hash)?;
             let output = load_record(0, Source::GroupOutput)?;
             validate_creation(&output, &issuer_hash)
         }
         (1, 1) => {
             ensure_authorized(&issuer_hash)?;
+            ensure_group_lock(0, Source::GroupInput, &issuer_hash)?;
+            ensure_group_lock(0, Source::GroupOutput, &issuer_hash)?;
             let input = load_record(0, Source::GroupInput)?;
             let output = load_record(0, Source::GroupOutput)?;
             validate_update(&input, &output, &issuer_hash)
@@ -88,6 +91,19 @@ fn ensure_authorized(expected_issuer_lock_hash: &[u8; 32]) -> Result<(), Error> 
         Ok(())
     } else {
         Err(Error::Unauthorized)
+    }
+}
+
+fn ensure_group_lock(
+    index: usize,
+    source: Source,
+    expected_issuer_lock_hash: &[u8; 32],
+) -> Result<(), Error> {
+    let actual_hash = load_cell_lock_hash(index, source)?;
+    if actual_hash[..] == expected_issuer_lock_hash[..] {
+        Ok(())
+    } else {
+        Err(Error::OutputLockMismatch)
     }
 }
 
@@ -155,13 +171,13 @@ fn validate_update(
     expected_issuer_hash: &[u8; 32],
 ) -> Result<(), Error> {
     validate_common(input, expected_issuer_hash)?;
+    if input.version != output.version || input.issuer_lock_hash != output.issuer_lock_hash {
+        return Err(Error::ImmutableFieldChanged);
+    }
     validate_common(output, expected_issuer_hash)?;
 
     if input.credential_id != output.credential_id {
         return Err(Error::CredentialIdChanged);
-    }
-    if input.version != output.version || input.issuer_lock_hash != output.issuer_lock_hash {
-        return Err(Error::ImmutableFieldChanged);
     }
     if input.status != STATUS_ACTIVE || output.status != STATUS_REVOKED {
         return Err(Error::InvalidStateTransition);
@@ -212,4 +228,57 @@ mod unit_tests {
             Err(Error::InvalidStateTransition)
         );
     }
+
+    #[test]
+    fn common_validation_rejects_version_status_and_issuer() {
+        let mut invalid_version = record(STATUS_ACTIVE, 0, 0);
+        invalid_version.version = 2;
+        assert_eq!(
+            validate_creation(&invalid_version, &[8u8; 32]),
+            Err(Error::InvalidVersion)
+        );
+
+        let invalid_status = record(9, 0, 0);
+        assert_eq!(
+            validate_creation(&invalid_status, &[8u8; 32]),
+            Err(Error::InvalidStatus)
+        );
+
+        assert_eq!(
+            validate_creation(&record(STATUS_ACTIVE, 0, 0), &[9u8; 32]),
+            Err(Error::IssuerMismatch)
+        );
+    }
+
+    #[test]
+    fn update_rejects_changed_immutable_fields() {
+        let active = record(STATUS_ACTIVE, 0, 0);
+        let mut changed_issuer = record(STATUS_REVOKED, 1, 100);
+        changed_issuer.issuer_lock_hash = [9u8; 32];
+        assert_eq!(
+            validate_update(&active, &changed_issuer, &[8u8; 32]),
+            Err(Error::ImmutableFieldChanged)
+        );
+
+        let mut changed_version = record(STATUS_REVOKED, 1, 100);
+        changed_version.version = 2;
+        assert_eq!(
+            validate_update(&active, &changed_version, &[8u8; 32]),
+            Err(Error::ImmutableFieldChanged)
+        );
+    }
+
+    #[test]
+    fn update_requires_reason_and_timestamp() {
+        let active = record(STATUS_ACTIVE, 0, 0);
+        assert_eq!(
+            validate_update(&active, &record(STATUS_REVOKED, 0, 100), &[8u8; 32]),
+            Err(Error::RevocationReasonMissing)
+        );
+        assert_eq!(
+            validate_update(&active, &record(STATUS_REVOKED, 1, 0), &[8u8; 32]),
+            Err(Error::RevocationTimestampMissing)
+        );
+    }
+
 }

@@ -1,0 +1,73 @@
+
+> ckb-degree-proof@2.1.0 test
+> node --test --test-reporter=spec
+
+✔ Cell decoder CLI returns canonical JSON for a valid vector (36.351917ms)
+✔ Cell decoder CLI returns non-zero for non-canonical data (42.539142ms)
+✔ proof verifier CLI accepts a valid proof and rejects a modified one (95.514127ms)
+✔ test-vector generator is deterministic (46.03067ms)
+✔ community JSON Schemas declare draft 2020-12 and stable identifiers (1.369669ms)
+✔ decoder manifest is explicitly an example and requires deployment replacement (0.43635ms)
+✔ community corpus has stable metadata and both valid and invalid vectors (0.538798ms)
+✔ application and standalone community decoders agree on every vector (2.856766ms)
+✔ valid credential passes all requested checks and omits raw identity (9.419647ms)
+✔ modified document is rejected (4.503724ms)
+✔ tampered signed payload is rejected (3.969268ms)
+✔ unknown issuer is rejected (3.659038ms)
+✔ revoked credential is rejected and binary matches Rust layout (6.528221ms)
+✔ duplicate mint and second revocation are rejected (6.07608ms)
+✔ local verifier detects attempted reactivation after a signed revocation (5.952386ms)
+✔ invalid revocation timestamp leaves the ledger unchanged (5.094559ms)
+✔ revocation event from another credential is rejected (6.71747ms)
+✔ invalid calendar date is rejected during mint (1.681278ms)
+✔ decoder manifest binds recognition to a deployed Type Script (2.036671ms)
+✔ decoder manifest includes RPC only when explicitly requested (0.388414ms)
+✔ decoder manifest rejects malformed deployment metadata (0.488723ms)
+✔ environment parser handles comments and quoted values (1.385649ms)
+✔ environment validator rejects missing and malformed lock hash (0.778875ms)
+✔ public inspector environment does not require private-key settings (2.032946ms)
+✔ static path resolver blocks traversal and accepts files inside public root (1.132708ms)
+✔ health endpoint advertises read-only community formats and security headers (31.803419ms)
+✔ inspect endpoint accepts canonical JSON and handles an uploaded document (14.491762ms)
+✔ API rejects non-JSON requests and invalid base64 (7.301276ms)
+✔ API enforces decoded document and request-body limits (8.602925ms)
+✔ Cell decoder endpoint returns canonical and validation-error states (9.41314ms)
+✔ proof endpoint accepts untampered proof and rejects modified proof (11.026018ms)
+✔ static files are served but unsupported methods and missing paths are rejected (6.459827ms)
+﹣ CCC derives the expected first OffCKB account Lock Script hash (1.22547ms) # @ckb-ccc/core is not installed; run npm ci for this integration test.
+✔ OffCKB system-script parser produces CCC-compatible known Script keys (0.911367ms)
+✔ OffCKB parser rejects missing required system Scripts (0.497442ms)
+✔ deployment parser accepts the OffCKB scripts.json structure (0.824255ms)
+✔ deployment parser accepts a binary-suffixed contract name (0.38876ms)
+✔ proof verifier accepts an untampered canonical proof (2.371299ms)
+✔ proof verifier detects content tampering (0.361052ms)
+✔ proof verifier detects unsupported schema (0.332965ms)
+✔ proof verifier reports sensitive fields and local absolute paths (0.510026ms)
+✔ proof verifier rejects invalid timestamps and non-object inputs (0.363038ms)
+✔ public inspector verifies an active credential without private-key settings (8.251533ms)
+✔ public inspector reports a revoked but cryptographically intact credential (4.565137ms)
+✔ public inspector detects duplicate live chain records (3.93027ms)
+✔ public inspector can inspect metadata without a document but does not call it fully valid (2.452559ms)
+✔ public proof export writes the same proof object (3.684331ms)
+✔ offline mode never claims complete on-chain validation (2.593991ms)
+✔ public proof removes RPC credentials and internal error details (2.541307ms)
+✔ on-chain record without a public credential is reported explicitly (2.156813ms)
+✔ record summary distinguishes active, revoked, invalid and duplicate states (1.746186ms)
+✔ record validator enforces state-specific fields and issuer binding (0.97429ms)
+✔ credential hash is deterministic and trims surrounding whitespace (1.090985ms)
+✔ active record round-trips through Buffer and hex (0.941635ms)
+✔ revoked record exposes reason name and ISO timestamp (0.463103ms)
+✔ hash-based encoder matches credential-ID encoder (0.269639ms)
+✔ validator reports expected credential and issuer mismatches (1.051398ms)
+✔ validator rejects non-canonical state fields (0.352414ms)
+✔ decoder rejects malformed hex and incorrect length (0.420302ms)
+✔ encoder rejects invalid status, hash, reason and timestamp (0.205486ms)
+✔ reason registry distinguishes standard and extension codes (0.216599ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 430.957447

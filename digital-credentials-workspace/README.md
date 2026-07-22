@@ -8,4 +8,4 @@ make build
 make test
 ```
 
-The contract is intentionally small and auditable. It does not mint the academic credential itself; the application signs and records credential metadata, while this Type Script protects the irreversible revocation state transition.
+The contract is intentionally small and auditable. It does not mint the academic credential itself; the application signs and records credential metadata, while this Type Script protects the per-Cell ACTIVE-to-REVOKED state transition.

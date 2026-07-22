@@ -1,0 +1,17 @@
+{
+  "schema": "ckb-degree-v2-smoke-test/v1",
+  "executedAt": "2026-07-22T13:19:40.733Z",
+  "service": "CKB Degree Proof v2 Public Credential Inspector",
+  "mode": "offline-chain-check-skipped",
+  "outcome": "CHAIN_NOT_CHECKED",
+  "documentVerified": true,
+  "readOnly": true,
+  "privateKeyRequired": false,
+  "privateKeyFilesPresentDuringInspection": false,
+  "stateConsistency": {
+    "consistent": null,
+    "code": "NOT_CHECKED",
+    "message": "On-chain state was not available for comparison."
+  },
+  "proofDigest": "0x85ddddccb2d769bb008b6a129947a2d5862c67e76d251e2693d8e0464afa5d64"
+}

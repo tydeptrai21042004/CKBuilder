@@ -1,0 +1,117 @@
+
+> ckb-degree-proof@2.1.0 ci:local
+> npm run syntax:check && npm test && npm run community:check && bash scripts/audit-release.sh
+
+
+> ckb-degree-proof@2.1.0 syntax:check
+> bash -c 'while IFS= read -r -d "" file; do node --check "$file"; done < <(find src test public scripts community -name "*.js" -print0)'
+
+
+> ckb-degree-proof@2.1.0 test
+> node --test --test-reporter=spec
+
+✔ Cell decoder CLI returns canonical JSON for a valid vector (42.512296ms)
+✔ Cell decoder CLI returns non-zero for non-canonical data (44.939372ms)
+✔ proof verifier CLI accepts a valid proof and rejects a modified one (97.163893ms)
+✔ test-vector generator is deterministic (51.435884ms)
+✔ community JSON Schemas declare draft 2020-12 and stable identifiers (1.370467ms)
+✔ decoder manifest is explicitly an example and requires deployment replacement (0.332979ms)
+✔ community corpus has stable metadata and both valid and invalid vectors (0.538389ms)
+✔ application and standalone community decoders agree on every vector (2.534343ms)
+✔ valid credential passes all requested checks and omits raw identity (10.639742ms)
+✔ modified document is rejected (5.425931ms)
+✔ tampered signed payload is rejected (4.293591ms)
+✔ unknown issuer is rejected (3.854175ms)
+✔ revoked credential is rejected and binary matches Rust layout (6.722997ms)
+✔ duplicate mint and second revocation are rejected (8.353993ms)
+✔ local verifier detects attempted reactivation after a signed revocation (6.122257ms)
+✔ invalid revocation timestamp leaves the ledger unchanged (5.126219ms)
+✔ revocation event from another credential is rejected (8.110419ms)
+✔ invalid calendar date is rejected during mint (1.798928ms)
+✔ decoder manifest binds recognition to a deployed Type Script (1.471052ms)
+✔ decoder manifest includes RPC only when explicitly requested (0.329705ms)
+✔ decoder manifest rejects malformed deployment metadata (0.493614ms)
+✔ environment parser handles comments and quoted values (1.699126ms)
+✔ environment validator rejects missing and malformed lock hash (0.761607ms)
+✔ public inspector environment does not require private-key settings (2.413626ms)
+✔ static path resolver blocks traversal and accepts files inside public root (0.997457ms)
+✔ health endpoint advertises read-only community formats and security headers (34.435983ms)
+✔ inspect endpoint accepts canonical JSON and handles an uploaded document (11.259884ms)
+✔ API rejects non-JSON requests and invalid base64 (6.458447ms)
+✔ API enforces decoded document and request-body limits (6.120054ms)
+✔ Cell decoder endpoint returns canonical and validation-error states (7.492176ms)
+✔ proof endpoint accepts untampered proof and rejects modified proof (8.623378ms)
+✔ static files are served but unsupported methods and missing paths are rejected (4.93483ms)
+﹣ CCC derives the expected first OffCKB account Lock Script hash (1.426578ms) # @ckb-ccc/core is not installed; run npm ci for this integration test.
+✔ OffCKB system-script parser produces CCC-compatible known Script keys (1.07346ms)
+✔ OffCKB parser rejects missing required system Scripts (0.576874ms)
+✔ deployment parser accepts the OffCKB scripts.json structure (1.427229ms)
+✔ deployment parser accepts a binary-suffixed contract name (0.630681ms)
+✔ proof verifier accepts an untampered canonical proof (2.361316ms)
+✔ proof verifier detects content tampering (0.360092ms)
+✔ proof verifier detects unsupported schema (0.329912ms)
+✔ proof verifier reports sensitive fields and local absolute paths (0.436838ms)
+✔ proof verifier rejects invalid timestamps and non-object inputs (0.319199ms)
+✔ public inspector verifies an active credential without private-key settings (10.245942ms)
+✔ public inspector reports a revoked but cryptographically intact credential (9.314302ms)
+✔ public inspector detects duplicate live chain records (3.767699ms)
+✔ public inspector can inspect metadata without a document but does not call it fully valid (4.52127ms)
+✔ public proof export writes the same proof object (6.474183ms)
+✔ offline mode never claims complete on-chain validation (3.189221ms)
+✔ public proof removes RPC credentials and internal error details (3.374796ms)
+✔ on-chain record without a public credential is reported explicitly (3.241751ms)
+✔ record summary distinguishes active, revoked, invalid and duplicate states (1.204596ms)
+✔ record validator enforces state-specific fields and issuer binding (0.715776ms)
+✔ credential hash is deterministic and trims surrounding whitespace (1.308674ms)
+✔ active record round-trips through Buffer and hex (1.009294ms)
+✔ revoked record exposes reason name and ISO timestamp (0.610121ms)
+✔ hash-based encoder matches credential-ID encoder (1.287297ms)
+✔ validator reports expected credential and issuer mismatches (0.311864ms)
+✔ validator rejects non-canonical state fields (0.289723ms)
+✔ decoder rejects malformed hex and incorrect length (0.404493ms)
+✔ encoder rejects invalid status, hash, reason and timestamp (0.257044ms)
+✔ reason registry distinguishes standard and extension codes (0.224803ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 454.229351
+
+> ckb-degree-proof@2.1.0 community:check
+> npm run test:vectors && node --test test/community-vectors.test.js
+
+
+> ckb-degree-proof@2.1.0 test:vectors
+> node scripts/verify-test-vectors.js
+
+Verified 6 cross-implementation test vectors.
+TAP version 13
+# Subtest: community corpus has stable metadata and both valid and invalid vectors
+ok 1 - community corpus has stable metadata and both valid and invalid vectors
+  ---
+  duration_ms: 0.544484
+  type: 'test'
+  ...
+# Subtest: application and standalone community decoders agree on every vector
+ok 2 - application and standalone community decoders agree on every vector
+  ---
+  duration_ms: 2.554865
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51.451074
+[PASS] No generated .env or secrets directory is present.
+[PASS] No unapproved private-key, seed-phrase, or mnemonic assignment pattern was found.
+[PASS] Evidence paths and usernames are sanitized.
+[PASS] Evidence and community test-vector JSON files are valid.
+[PASS] Release audit completed successfully.

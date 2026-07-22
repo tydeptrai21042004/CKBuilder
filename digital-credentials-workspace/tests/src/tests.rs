@@ -14,12 +14,17 @@ const REVOKED: u8 = 1;
 const ERR_INVALID_GROUP_CELL_COUNT: i8 = 6;
 const ERR_DESTRUCTION_FORBIDDEN: i8 = 7;
 const ERR_INVALID_DATA_LENGTH: i8 = 8;
+const ERR_INVALID_VERSION: i8 = 9;
+const ERR_INVALID_STATUS: i8 = 10;
+const ERR_ISSUER_MISMATCH: i8 = 11;
 const ERR_UNAUTHORIZED: i8 = 12;
 const ERR_INVALID_INITIAL_STATE: i8 = 13;
 const ERR_CREDENTIAL_ID_CHANGED: i8 = 14;
 const ERR_INVALID_STATE_TRANSITION: i8 = 15;
 const ERR_REASON_MISSING: i8 = 16;
 const ERR_TIMESTAMP_MISSING: i8 = 17;
+const ERR_IMMUTABLE_FIELD_CHANGED: i8 = 18;
+const ERR_OUTPUT_LOCK_MISMATCH: i8 = 19;
 
 struct Setup {
     context: Context,
@@ -327,5 +332,104 @@ fn reject_missing_timestamp() {
         vec![output],
         vec![data],
         ERR_TIMESTAMP_MISSING,
+    );
+}
+
+
+#[test]
+fn reject_invalid_version() {
+    let mut s = setup();
+    let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
+    let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
+    let mut data = record(s.issuer_hash, 7, ACTIVE, 0, 0).to_vec();
+    data[0] = 2;
+    verify_error(s, vec![input], vec![output], vec![Bytes::from(data)], ERR_INVALID_VERSION);
+}
+
+#[test]
+fn reject_invalid_status() {
+    let mut s = setup();
+    let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
+    let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
+    let mut data = record(s.issuer_hash, 7, ACTIVE, 0, 0).to_vec();
+    data[1] = 9;
+    verify_error(s, vec![input], vec![output], vec![Bytes::from(data)], ERR_INVALID_STATUS);
+}
+
+#[test]
+fn reject_record_issuer_mismatch() {
+    let mut s = setup();
+    let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
+    let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
+    let data = record([9u8; 32], 7, ACTIVE, 0, 0);
+    verify_error(s, vec![input], vec![output], vec![data], ERR_ISSUER_MISMATCH);
+}
+
+#[test]
+fn reject_creation_with_foreign_output_lock() {
+    let mut s = setup();
+    let input = input_cell(&mut s.context, s.issuer_lock.clone(), None, Bytes::new());
+    let output = output_cell(s.other_lock.clone(), Some(s.type_script.clone()));
+    let data = record(s.issuer_hash, 7, ACTIVE, 0, 0);
+    verify_error(s, vec![input], vec![output], vec![data], ERR_OUTPUT_LOCK_MISMATCH);
+}
+
+#[test]
+fn reject_update_that_changes_output_lock() {
+    let mut s = setup();
+    let input = input_cell(
+        &mut s.context,
+        s.issuer_lock.clone(),
+        Some(s.type_script.clone()),
+        record(s.issuer_hash, 7, ACTIVE, 0, 0),
+    );
+    let output = output_cell(s.other_lock.clone(), Some(s.type_script.clone()));
+    let data = record(s.issuer_hash, 7, REVOKED, 1, 100);
+    verify_error(s, vec![input], vec![output], vec![data], ERR_OUTPUT_LOCK_MISMATCH);
+}
+
+#[test]
+fn reject_multiple_input_records() {
+    let mut s = setup();
+    let input1 = input_cell(
+        &mut s.context,
+        s.issuer_lock.clone(),
+        Some(s.type_script.clone()),
+        record(s.issuer_hash, 7, ACTIVE, 0, 0),
+    );
+    let input2 = input_cell(
+        &mut s.context,
+        s.issuer_lock.clone(),
+        Some(s.type_script.clone()),
+        record(s.issuer_hash, 8, ACTIVE, 0, 0),
+    );
+    let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
+    let data = record(s.issuer_hash, 7, REVOKED, 1, 100);
+    verify_error(
+        s,
+        vec![input1, input2],
+        vec![output],
+        vec![data],
+        ERR_INVALID_GROUP_CELL_COUNT,
+    );
+}
+
+#[test]
+fn reject_immutable_issuer_change_on_update() {
+    let mut s = setup();
+    let input = input_cell(
+        &mut s.context,
+        s.issuer_lock.clone(),
+        Some(s.type_script.clone()),
+        record(s.issuer_hash, 7, ACTIVE, 0, 0),
+    );
+    let output = output_cell(s.issuer_lock.clone(), Some(s.type_script.clone()));
+    let data = record([9u8; 32], 7, REVOKED, 1, 100);
+    verify_error(
+        s,
+        vec![input],
+        vec![output],
+        vec![data],
+        ERR_IMMUTABLE_FIELD_CHANGED,
     );
 }

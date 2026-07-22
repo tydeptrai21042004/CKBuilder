@@ -1,0 +1,14 @@
+{
+  "schema": "ckb-degree-decoder-manifest/v1",
+  "protocol": "ckb-degree-credential-cell/v1",
+  "network": "testnet",
+  "typeScript": {
+    "codeHash": "0xREPLACE_WITH_DEPLOYED_CODE_HASH",
+    "hashType": "data2",
+    "argsRule": "32-byte issuer Lock Script hash"
+  },
+  "recordLength": 75,
+  "decoder": "credential-cell-decoder.js",
+  "testVectors": "../test-vectors/credential-cell-v1.json",
+  "status": "example-only"
+}

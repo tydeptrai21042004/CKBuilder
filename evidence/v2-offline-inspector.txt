@@ -1,0 +1,122 @@
+
+> ckb-degree-proof@2.0.0 credential:inspect
+> node src/cli/public-inspect.js CKB-DEGREE-2026-0001 examples/certificate-original.pdf --offline --export=data/public-proof.json
+
+Outcome: CHAIN_NOT_CHECKED
+Read-only: yes
+Private key required: no
+Off-chain status: ACTIVE
+On-chain status: NOT_CHECKED
+Document verified: yes
+State consistency: not checked
+Proof digest: 0x8128d5c598f49d9530408adb770760dc98ce98547fb6af956d3bd4ee8eba803b
+Proof exported: <project>/data/public-proof.json
+
+{
+  "schema": "ckb-degree-public-verification-proof/v2",
+  "generatedAt": "2026-07-22T13:19:39.047Z",
+  "credentialId": "CKB-DEGREE-2026-0001",
+  "credentialHash": "0x929707f6c49be9cf0649fa171c32689b51a8f43794e5450adf16527aebd766c9",
+  "network": "local",
+  "rpcUrl": "http://127.0.0.1:28114/",
+  "readOnly": true,
+  "privateKeyRequired": false,
+  "outcome": "CHAIN_NOT_CHECKED",
+  "usableAsActiveCredential": false,
+  "offChain": {
+    "status": "ACTIVE",
+    "valid": true,
+    "integrityValid": true,
+    "complete": true,
+    "documentVerified": true,
+    "credential": {
+      "schema": "ckb-degree-credential/v1",
+      "credentialId": "CKB-DEGREE-2026-0001",
+      "issuer": {
+        "issuerId": "0x91eca6bf28c8002ff5e1b35b950511b527c8893da2cf5003c336b7823a81ff4e",
+        "name": "Example University",
+        "lockHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "subject": {
+        "recipientLockHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+        "identityCommitment": "0x3de0f6a88dfb3f2047be9e2081fd7310d8d029f889495ce38c909764a691c5b5"
+      },
+      "award": {
+        "title": "Bachelor of Computer Science",
+        "field": "Computer Science",
+        "classification": "Distinction",
+        "issuedAt": "2026-07-14"
+      },
+      "document": {
+        "hashAlgorithm": "sha256",
+        "hash": "0x046d1847d32869973ed9a018ea4c48f1f2d11e88a29ff608cc8087f903719bcd",
+        "fileName": "certificate-original.pdf"
+      },
+      "createdAt": "2026-07-22T13:19:38.915Z"
+    },
+    "checks": [
+      {
+        "name": "credential_exists",
+        "ok": true,
+        "message": "Credential record exists."
+      },
+      {
+        "name": "credential_binding",
+        "ok": true,
+        "message": "Stored credential payload is bound to the requested credentialId."
+      },
+      {
+        "name": "schema",
+        "ok": true,
+        "message": "Credential schema and field encodings are valid."
+      },
+      {
+        "name": "trusted_issuer",
+        "ok": true,
+        "message": "Issuer ID and lock hash are trusted."
+      },
+      {
+        "name": "issuer_key",
+        "ok": true,
+        "message": "Issuer public key matches issuerId."
+      },
+      {
+        "name": "credential_signature",
+        "ok": true,
+        "message": "Credential signature is valid."
+      },
+      {
+        "name": "document_hash",
+        "ok": true,
+        "message": "Uploaded document hash matches the credential."
+      },
+      {
+        "name": "revocation_status",
+        "ok": true,
+        "message": "Credential is active."
+      }
+    ]
+  },
+  "onChain": {
+    "found": false,
+    "status": "NOT_CHECKED",
+    "readOnly": true,
+    "records": []
+  },
+  "stateConsistency": {
+    "consistent": null,
+    "code": "NOT_CHECKED",
+    "message": "On-chain state was not available for comparison."
+  },
+  "history": {
+    "available": false,
+    "source": null,
+    "steps": []
+  },
+  "limitations": [
+    "The current Type Script enforces an irreversible ACTIVE to REVOKED transition for one Cell lineage.",
+    "Global uniqueness across newly created Cells with the same credential hash is not yet enforced.",
+    "Saved history evidence is supplementary; the live Cell status is the independently queried chain result."
+  ],
+  "proofDigest": "0x8128d5c598f49d9530408adb770760dc98ce98547fb6af956d3bd4ee8eba803b"
+}
