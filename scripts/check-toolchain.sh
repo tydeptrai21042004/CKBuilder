@@ -11,7 +11,7 @@ for command in node npm bash make; do
 done
 
 if [[ "${SKIP_RUST:-0}" == "1" ]]; then
-  warn "SKIP_RUST=1: Rust build and on-chain contract tests will be skipped. This is not a full Level-2 verification."
+  warn "SKIP_RUST=1: Rust build and on-chain contract tests will be skipped. This is not a full CKB contract verification."
   exit 0
 fi
 

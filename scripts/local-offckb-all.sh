@@ -347,7 +347,7 @@ FINAL_JSON="$(npm run --silent offckb:verify -- "$LOCAL_CHAIN_CREDENTIAL_ID")"
 printf '%s\n' "$FINAL_JSON"
 printf '%s' "$FINAL_JSON" | grep -q '"status": "REVOKED"' \
   || fail "Final on-chain state is not REVOKED."
-pass "The local chain contains the irreversible REVOKED record."
+pass "The local chain contains the final REVOKED record for the tested Cell lineage."
 
 if command -v sha256sum >/dev/null; then
   sha256sum "$CONTRACT_BIN" | tee "$ROOT/data/credential-revocation.sha256"

@@ -14,7 +14,7 @@ import {
   verifyObject
 } from "./crypto.js";
 import { loadLedger, saveLedger } from "./ledger.js";
-import { readJson, writeJsonAtomic } from "./json.js";
+import { ensureParent, readJson, writeJsonAtomic } from "./json.js";
 import {
   CREDENTIAL_SCHEMA,
   RECORD_SCHEMA,
@@ -26,8 +26,11 @@ import {
 import {
   CHAIN_STATUS_ACTIVE,
   CHAIN_STATUS_REVOKED,
+  credentialHash,
   encodeRevocationRecord
 } from "./revocation-binary.js";
+
+const REVOCATION_SCHEMA = "ckb-degree-revocation/v1";
 
 export function initializeIssuer(env) {
   const result = generateIssuerKeys(env.ISSUER_PRIVATE_KEY_PATH, env.ISSUER_PUBLIC_KEY_PATH);
@@ -92,14 +95,15 @@ export function mintCredential(env, input, documentPath, options = {}) {
   ledger.credentials[input.credentialId] = record;
   saveLedger(env.DATA_DIR, ledger);
 
+  const artifactStem = credentialArtifactStem(input.credentialId);
   const credentialDir = path.join(env.DATA_DIR, "credentials");
   fs.mkdirSync(credentialDir, { recursive: true });
-  writeJsonAtomic(path.join(credentialDir, `${safeName(input.credentialId)}.json`), record);
+  writeJsonAtomic(path.join(credentialDir, `${artifactStem}.json`), record);
 
   const chainDir = path.join(env.DATA_DIR, "revocations");
   fs.mkdirSync(chainDir, { recursive: true });
   fs.writeFileSync(
-    path.join(chainDir, `${safeName(input.credentialId)}-active.bin`),
+    path.join(chainDir, `${artifactStem}-active.bin`),
     encodeRevocationRecord({
       status: CHAIN_STATUS_ACTIVE,
       credentialId: input.credentialId,
@@ -133,59 +137,103 @@ export function revokeCredential(env, credentialId, reasonCode, reasonText, opti
     throw new AppError("ISSUER_MISMATCH", "The configured issuer is not authorized to revoke this credential.");
   }
 
+  // Validate and encode all values before mutating persistent state.
   const revokedAtIso = options.revokedAt ?? new Date().toISOString();
+  const revokedAtMs = Date.parse(revokedAtIso);
+  if (!Number.isFinite(revokedAtMs)) {
+    throw new AppError("REVOCATION_DATE_INVALID", "revokedAt must be a valid ISO-8601 timestamp.");
+  }
+  const normalizedRevokedAt = new Date(revokedAtMs).toISOString();
+  const unixSeconds = BigInt(Math.floor(revokedAtMs / 1000));
   const event = {
-    schema: "ckb-degree-revocation/v1",
+    schema: REVOCATION_SCHEMA,
     credentialId,
     issuerId,
     reasonCode,
-    reason: reasonText,
-    revokedAt: revokedAtIso
+    reason: reasonText.trim(),
+    revokedAt: normalizedRevokedAt
   };
   const signature = signObject(event, privateKey);
-  record.status = STATUS_REVOKED;
-  record.revocation = { event, signature };
-  ledger.revocations[credentialId] = record.revocation;
-  saveLedger(env.DATA_DIR, ledger);
+  const revocation = { event, signature };
+  const binary = encodeRevocationRecord({
+    status: CHAIN_STATUS_REVOKED,
+    credentialId,
+    issuerLockHash: env.ISSUER_LOCK_HASH,
+    reasonCode,
+    revokedAt: unixSeconds
+  });
 
-  const unixSeconds = BigInt(Math.floor(new Date(revokedAtIso).getTime() / 1000));
+  const updatedLedger = structuredClone(ledger);
+  updatedLedger.credentials[credentialId].status = STATUS_REVOKED;
+  updatedLedger.credentials[credentialId].revocation = revocation;
+  updatedLedger.revocations[credentialId] = revocation;
+
   const chainDir = path.join(env.DATA_DIR, "revocations");
-  fs.mkdirSync(chainDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(chainDir, `${safeName(credentialId)}-revoked.bin`),
-    encodeRevocationRecord({
-      status: CHAIN_STATUS_REVOKED,
-      credentialId,
-      issuerLockHash: env.ISSUER_LOCK_HASH,
-      reasonCode,
-      revokedAt: unixSeconds
-    })
-  );
-  return record.revocation;
+  const finalBinaryPath = path.join(chainDir, `${credentialArtifactStem(credentialId)}-revoked.bin`);
+  const temporaryBinaryPath = `${finalBinaryPath}.${process.pid}.tmp`;
+  ensureParent(finalBinaryPath);
+  fs.writeFileSync(temporaryBinaryPath, binary, { mode: 0o600 });
+
+  try {
+    saveLedger(env.DATA_DIR, updatedLedger);
+    fs.renameSync(temporaryBinaryPath, finalBinaryPath);
+  } catch (error) {
+    try {
+      saveLedger(env.DATA_DIR, ledger);
+    } catch {
+      // Preserve the original failure. The caller still receives a failed operation.
+    }
+    fs.rmSync(temporaryBinaryPath, { force: true });
+    throw error;
+  }
+
+  return revocation;
 }
 
 export function verifyCredential(env, credentialId, documentPath, options = {}) {
+  if (!documentPath) {
+    throw new AppError("DOCUMENT_REQUIRED", "A certificate document is required for full credential verification.");
+  }
+  return verifyCredentialInternal(env, credentialId, documentPath, { ...options, allowMissingDocument: false });
+}
+
+/**
+ * Read-only verification used by the Public Credential Inspector.
+ * This function never loads an issuer private key. A document is optional;
+ * without it, the result is an inspection rather than complete verification.
+ */
+export function verifyCredentialPublic(env, credentialId, documentPath = undefined, options = {}) {
+  return verifyCredentialInternal(env, credentialId, documentPath, { ...options, allowMissingDocument: true });
+}
+
+function verifyCredentialInternal(env, credentialId, documentPath, options) {
   const checks = [];
   const fail = (name, code, message) => checks.push({ name, ok: false, code, message });
   const pass = (name, message) => checks.push({ name, ok: true, message });
+  const skip = (name, code, message) => checks.push({ name, ok: null, code, message });
 
   const ledger = loadLedger(env.DATA_DIR);
   const record = ledger.credentials[credentialId];
   if (!record) {
     fail("credential_exists", "CREDENTIAL_NOT_FOUND", `Credential not found: ${credentialId}`);
-    return result(false, checks, null);
+    return result(false, checks, null, { documentVerified: false, integrityValid: false });
   }
   pass("credential_exists", "Credential record exists.");
 
   try {
     validateCredentialPayload(record.payload);
+    if (record.payload.credentialId !== credentialId) {
+      fail("credential_binding", "CREDENTIAL_ID_MISMATCH", "Stored credential payload is bound to a different credentialId.");
+    } else {
+      pass("credential_binding", "Stored credential payload is bound to the requested credentialId.");
+    }
     pass("schema", "Credential schema and field encodings are valid.");
   } catch (error) {
     fail("schema", error.code ?? "SCHEMA_INVALID", error.message);
   }
 
   const trusted = readJson(env.TRUSTED_ISSUERS_FILE, { issuers: {} });
-  const trustedIssuer = trusted.issuers?.[record.payload.issuer.issuerId];
+  const trustedIssuer = trusted.issuers?.[record.payload?.issuer?.issuerId];
   if (!trustedIssuer) {
     fail("trusted_issuer", "UNTRUSTED_ISSUER", "Issuer is not present in the trusted issuer registry.");
   } else if (trustedIssuer.lockHash.toLowerCase() !== record.payload.issuer.lockHash.toLowerCase()) {
@@ -194,30 +242,39 @@ export function verifyCredential(env, credentialId, documentPath, options = {}) 
     pass("trusted_issuer", "Issuer ID and lock hash are trusted.");
   }
 
+  let recordPublicKey;
   try {
-    const recordPublicKey = crypto.createPublicKey(record.issuerPublicKeyPem);
+    recordPublicKey = crypto.createPublicKey(record.issuerPublicKeyPem);
     const keyId = issuerIdFromPublicKey(recordPublicKey);
     if (keyId !== record.payload.issuer.issuerId) {
       fail("issuer_key", "ISSUER_KEY_ID_MISMATCH", "Embedded issuer public key does not match issuerId.");
-    } else if (!verifyObject(record.payload, record.signature, recordPublicKey)) {
-      fail("credential_signature", "SIGNATURE_INVALID", "Credential signature is invalid or the payload was modified.");
     } else {
       pass("issuer_key", "Issuer public key matches issuerId.");
+    }
+    if (!verifyObject(record.payload, record.signature, recordPublicKey)) {
+      fail("credential_signature", "SIGNATURE_INVALID", "Credential signature is invalid or the payload was modified.");
+    } else {
       pass("credential_signature", "Credential signature is valid.");
     }
   } catch {
     fail("credential_signature", "SIGNATURE_INVALID", "Credential signature or public key could not be verified.");
   }
 
-  try {
-    const actualHash = hashFile(documentPath);
-    if (actualHash !== record.payload.document.hash) {
-      fail("document_hash", "DOCUMENT_HASH_MISMATCH", "Uploaded document differs from the document used during minting.");
-    } else {
-      pass("document_hash", "Uploaded document hash matches the credential.");
+  let documentVerified = false;
+  if (documentPath) {
+    try {
+      const actualHash = hashFile(documentPath);
+      if (actualHash !== record.payload.document.hash) {
+        fail("document_hash", "DOCUMENT_HASH_MISMATCH", "Uploaded document differs from the document used during minting.");
+      } else {
+        documentVerified = true;
+        pass("document_hash", "Uploaded document hash matches the credential.");
+      }
+    } catch (error) {
+      fail("document_hash", error.code ?? "DOCUMENT_READ_FAILED", error.message);
     }
-  } catch (error) {
-    fail("document_hash", error.code ?? "DOCUMENT_READ_FAILED", error.message);
+  } else if (options.allowMissingDocument) {
+    skip("document_hash", "DOCUMENT_NOT_PROVIDED", "No document was supplied; document integrity was not checked.");
   }
 
   if (options.recipientLockHash) {
@@ -242,23 +299,54 @@ export function verifyCredential(env, credentialId, documentPath, options = {}) 
   }
 
   const revocationRecord = ledger.revocations[credentialId] ?? record.revocation;
+  let validSignedRevocation = false;
   if (record.status === STATUS_REVOKED || revocationRecord) {
-    let revocationValid = false;
-    try {
-      const publicKey = crypto.createPublicKey(record.issuerPublicKeyPem);
-      revocationValid = Boolean(revocationRecord?.event) && verifyObject(revocationRecord.event, revocationRecord.signature, publicKey);
-    } catch {
-      revocationValid = false;
-    }
-    if (!revocationValid) {
+    if (!revocationRecord?.event || typeof revocationRecord.signature !== "string") {
       fail("revocation_signature", "REVOCATION_SIGNATURE_INVALID", "Revocation record is malformed or unsigned.");
     } else {
-      pass("revocation_signature", "Revocation event signature is valid.");
-      if (record.status === STATUS_ACTIVE) {
-        fail("revocation_status", "REACTIVATION_DETECTED", "A signed revocation exists but the record was changed back to ACTIVE.");
+      const event = revocationRecord.event;
+      if (event.schema !== REVOCATION_SCHEMA) {
+        fail("revocation_schema", "REVOCATION_SCHEMA_INVALID", "Revocation event schema is not supported.");
       } else {
-        fail("revocation_status", "CREDENTIAL_REVOKED", `Credential was revoked: ${revocationRecord.event.reason}`);
+        pass("revocation_schema", "Revocation event schema is supported.");
       }
+      if (event.credentialId !== credentialId || event.credentialId !== record.payload.credentialId) {
+        fail("revocation_credential_binding", "REVOCATION_CREDENTIAL_MISMATCH", "Revocation event is signed for a different credential.");
+      } else {
+        pass("revocation_credential_binding", "Revocation event is bound to this credential.");
+      }
+      if (event.issuerId !== record.payload.issuer.issuerId) {
+        fail("revocation_issuer_binding", "REVOCATION_ISSUER_MISMATCH", "Revocation event is signed for a different issuer identity.");
+      } else {
+        pass("revocation_issuer_binding", "Revocation event is bound to the credential issuer.");
+      }
+      if (!Number.isInteger(event.reasonCode) || event.reasonCode < 1 || event.reasonCode > 255) {
+        fail("revocation_reason", "REVOCATION_REASON_CODE_INVALID", "Revocation reasonCode must be between 1 and 255.");
+      } else if (typeof event.reason !== "string" || event.reason.trim() === "") {
+        fail("revocation_reason", "REVOCATION_REASON_INVALID", "Revocation reason is missing.");
+      } else {
+        pass("revocation_reason", "Revocation reason is valid.");
+      }
+      if (!Number.isFinite(Date.parse(event.revokedAt))) {
+        fail("revocation_timestamp", "REVOCATION_DATE_INVALID", "Revocation timestamp is invalid.");
+      } else {
+        pass("revocation_timestamp", "Revocation timestamp is valid.");
+      }
+
+      if (!recordPublicKey || !verifyObject(event, revocationRecord.signature, recordPublicKey)) {
+        fail("revocation_signature", "REVOCATION_SIGNATURE_INVALID", "Revocation event signature is invalid.");
+      } else {
+        validSignedRevocation = true;
+        pass("revocation_signature", "Revocation event signature is valid.");
+      }
+    }
+
+    if (record.status === STATUS_ACTIVE && validSignedRevocation) {
+      fail("revocation_status", "REACTIVATION_DETECTED", "A signed revocation exists but the off-chain record was changed back to ACTIVE.");
+    } else if (record.status === STATUS_REVOKED && validSignedRevocation) {
+      fail("revocation_status", "CREDENTIAL_REVOKED", `Credential was revoked: ${revocationRecord.event.reason}`);
+    } else if (![STATUS_ACTIVE, STATUS_REVOKED].includes(record.status)) {
+      fail("revocation_status", "STATUS_INVALID", `Unknown credential status: ${record.status}`);
     }
   } else if (record.status === STATUS_ACTIVE) {
     pass("revocation_status", "Credential is active.");
@@ -266,13 +354,29 @@ export function verifyCredential(env, credentialId, documentPath, options = {}) 
     fail("revocation_status", "STATUS_INVALID", `Unknown credential status: ${record.status}`);
   }
 
-  return result(checks.every((check) => check.ok), checks, record);
+  const nonBlockingStatusCodes = new Set(["CREDENTIAL_REVOKED"]);
+  const integrityValid = checks.every((check) => check.ok !== false || nonBlockingStatusCodes.has(check.code));
+  const complete = checks.every((check) => check.ok !== null);
+  const active = record.status === STATUS_ACTIVE && !validSignedRevocation;
+  const valid = integrityValid && complete && documentVerified && active;
+
+  return result(valid, checks, record, { documentVerified, integrityValid, complete, active });
 }
 
-function result(valid, checks, record) {
-  return { valid, checks, credential: record?.payload ?? null, status: record?.status ?? null };
+function result(valid, checks, record, details = {}) {
+  return {
+    valid,
+    integrityValid: details.integrityValid ?? valid,
+    complete: details.complete ?? true,
+    active: details.active ?? record?.status === STATUS_ACTIVE,
+    documentVerified: details.documentVerified ?? false,
+    checks,
+    credential: record?.payload ?? null,
+    status: record?.status ?? null
+  };
 }
 
-function safeName(value) {
-  return value.replace(/[^A-Za-z0-9._-]/g, "_");
+function credentialArtifactStem(value) {
+  const readable = value.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 80) || "credential";
+  return `${readable}-${credentialHash(value).slice(2, 14)}`;
 }

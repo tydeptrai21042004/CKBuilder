@@ -89,7 +89,9 @@ test("revoked credential is rejected and binary matches Rust layout", () => {
   const result = verifyCredential(f.env, f.input.credentialId, f.document);
   assert.equal(result.valid, false);
   assert.equal(result.checks.some((c) => c.code === "CREDENTIAL_REVOKED"), true);
-  const binary = fs.readFileSync(path.join(f.env.DATA_DIR, "revocations", `${f.input.credentialId}-revoked.bin`));
+  const revokedFile = fs.readdirSync(path.join(f.env.DATA_DIR, "revocations")).find((name) => name.endsWith("-revoked.bin"));
+  assert.ok(revokedFile);
+  const binary = fs.readFileSync(path.join(f.env.DATA_DIR, "revocations", revokedFile));
   assert.equal(binary.length, REVOCATION_RECORD_LENGTH);
   const decoded = decodeRevocationRecord(binary);
   assert.equal(decoded.status, 1);
@@ -116,4 +118,42 @@ test("local verifier detects attempted reactivation after a signed revocation", 
   const result = verifyCredential(f.env, f.input.credentialId, f.document);
   assert.equal(result.valid, false);
   assert.equal(result.checks.some((c) => c.code === "REACTIVATION_DETECTED"), true);
+});
+
+test("invalid revocation timestamp leaves the ledger unchanged", () => {
+  const f = fixture();
+  mintCredential(f.env, f.input, f.document);
+  const before = JSON.stringify(loadLedger(f.env.DATA_DIR));
+  assert.throws(
+    () => revokeCredential(f.env, f.input.credentialId, 1, "Invalid timestamp test", { revokedAt: "not-a-date" }),
+    (error) => error.code === "REVOCATION_DATE_INVALID"
+  );
+  assert.equal(JSON.stringify(loadLedger(f.env.DATA_DIR)), before);
+  const files = fs.readdirSync(path.join(f.env.DATA_DIR, "revocations"));
+  assert.equal(files.some((name) => name.endsWith("-revoked.bin")), false);
+});
+
+test("revocation event from another credential is rejected", () => {
+  const f = fixture();
+  const second = { ...f.input, credentialId: "TEST-2026-002" };
+  mintCredential(f.env, f.input, f.document);
+  mintCredential(f.env, second, f.document);
+  revokeCredential(f.env, second.credentialId, 4, "Second credential revoked");
+
+  const ledger = loadLedger(f.env.DATA_DIR);
+  ledger.credentials[f.input.credentialId].revocation = ledger.revocations[second.credentialId];
+  ledger.revocations[f.input.credentialId] = ledger.revocations[second.credentialId];
+  saveLedger(f.env.DATA_DIR, ledger);
+
+  const result = verifyCredential(f.env, f.input.credentialId, f.document);
+  assert.equal(result.valid, false);
+  assert.equal(result.checks.some((check) => check.code === "REVOCATION_CREDENTIAL_MISMATCH"), true);
+});
+
+test("invalid calendar date is rejected during mint", () => {
+  const f = fixture();
+  assert.throws(
+    () => mintCredential(f.env, { ...f.input, issuedAt: "2026-99-99" }, f.document),
+    (error) => error.code === "ISSUE_DATE_INVALID"
+  );
 });

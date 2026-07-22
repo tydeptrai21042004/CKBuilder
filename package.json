@@ -1,9 +1,9 @@
 {
   "name": "ckb-degree-proof",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "CKBuilder Level-2 academic credential minting, verification, and irreversible revocation demo for Nervos CKB.",
+  "description": "CKB Degree Proof v2.1: public credential inspection, reusable Cell-data decoding, conformance vectors, and a hardened CKB revocation Type Script.",
   "engines": {
     "node": ">=20"
   },
@@ -23,7 +23,19 @@
     "offckb:revoke": "node src/cli/offckb-local.js revoke",
     "offckb:verify": "node src/cli/offckb-local.js verify",
     "offckb:lifecycle": "node src/cli/offckb-local.js lifecycle",
-    "local:all": "bash scripts/local-offckb-all.sh"
+    "local:all": "bash scripts/local-offckb-all.sh",
+    "credential:inspect": "node src/cli/public-inspect.js",
+    "inspector:serve": "node src/cli/public-inspector-server.js",
+    "test:core": "node --test --test-reporter=spec",
+    "test:vectors": "node scripts/verify-test-vectors.js",
+    "vectors:generate": "node scripts/generate-test-vectors.js",
+    "cell:decode": "node src/cli/decode-cell-data.js",
+    "proof:verify": "node src/cli/verify-public-proof.js",
+    "syntax:check": "bash -c 'while IFS= read -r -d \"\" file; do node --check \"$file\"; done < <(find src test public scripts community -name \"*.js\" -print0)'",
+    "community:check": "npm run test:vectors && node --test test/community-vectors.test.js",
+    "ci:local": "npm run syntax:check && npm test && npm run community:check && bash scripts/audit-release.sh",
+    "test:rust": "cd digital-credentials-workspace && make test",
+    "manifest:export": "node src/cli/export-decoder-manifest.js"
   },
   "dependencies": {
     "@ckb-ccc/core": "1.16.1"

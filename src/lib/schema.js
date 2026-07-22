@@ -23,8 +23,8 @@ export function validateMintInput(input) {
   if (!HEX_32.test(input.recipientLockHash)) {
     throw new AppError("RECIPIENT_LOCK_HASH_INVALID", "recipientLockHash must be a 32-byte hexadecimal hash.");
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.issuedAt)) {
-    throw new AppError("ISSUE_DATE_INVALID", "issuedAt must use YYYY-MM-DD format.");
+  if (!isValidCalendarDate(input.issuedAt)) {
+    throw new AppError("ISSUE_DATE_INVALID", "issuedAt must be a real calendar date in YYYY-MM-DD format.");
   }
   if (input.credentialId.length > 128) {
     throw new AppError("CREDENTIAL_ID_TOO_LONG", "credentialId must be 128 characters or fewer.");
@@ -40,4 +40,15 @@ export function validateCredentialPayload(payload) {
   if (!HEX_32.test(payload.subject?.identityCommitment ?? "")) throw new AppError("IDENTITY_COMMITMENT_INVALID", "identity commitment is invalid.");
   if (payload.document?.hashAlgorithm !== "sha256") throw new AppError("DOCUMENT_HASH_ALGORITHM_INVALID", "Only sha256 is supported by this reference implementation.");
   if (!HEX_32.test(payload.document?.hash ?? "")) throw new AppError("DOCUMENT_HASH_INVALID", "document hash is invalid.");
+}
+
+function isValidCalendarDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
 }

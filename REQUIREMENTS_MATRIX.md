@@ -1,31 +1,51 @@
-# CKBuilder Task Requirements Matrix
+# CKBuilder task and contribution matrix
 
-| Task expectation | Implementation | Verified evidence |
+## Capstone implementation
+
+| Expectation | Implementation | Evidence |
 |---|---|---|
-| Create an original application | Academic credential minting, validation, tamper detection, and revocation | `src/`; Node demo output |
-| Write application code | Node.js CLI, services, schemas, cryptography, and CKB integration | `src/cli/`, `src/lib/`, `src/ckb/` |
-| Build on CKB | Custom Rust CKB Type Script | `digital-credentials-workspace/contracts/credential-revocation/` |
-| Advanced extension | Issuer-authorized irreversible revocation registry | `ACTIVE → REVOKED` contract logic |
-| Protect private identity | Salted identity commitment; raw ID and salt omitted | Node privacy test |
-| Verify document integrity | SHA-256 certificate comparison | Original/modified certificate tests |
-| Authenticate issuer | Ed25519 signature, trusted issuer, and CKB Lock Script hash | Signature and untrusted-issuer tests |
-| Prevent duplicate minting | Existing credential ID is rejected | Node negative test |
-| Support revocation | Signed event plus 75-byte CKB Cell record | Node and on-chain lifecycle |
-| Prevent reactivation | Rust Script rejects `REVOKED → ACTIVE` | Rust unit and integration tests |
-| Reject unauthorized changes | Issuer Lock Script hash authorization | `reject_unauthorized_creation` |
-| Reject malformed transitions | Negative contract tests | 11 CKB integration tests passed |
-| Check environment automatically | `.env`, RPC, Node, and format validation | `scripts/check-env.sh` |
-| Check toolchain automatically | Rust target and RISC-V C toolchain validation | `scripts/check-toolchain.sh` |
-| Run everything automatically | Complete local OffCKB pipeline | `scripts/local-offckb-all.sh` |
-| Prove deployment | Contract deployment transaction recorded | Screenshot 02; `evidence/run-summary.json` |
-| Prove live state transition | Real ACTIVE Cell consumed into REVOKED Cell | Screenshot 03; sanitized log |
-| Protect publication package | Secret/path audit and sanitized screenshots | `scripts/audit-release.sh`; screenshot security review |
-| Maintain weekly reports | Personal report template | `reports/week-template.md` |
-| Avoid real-fund risk | Local devnet only, public development key | README security boundary |
+| Create an original CKB application | Academic credential issuance, integrity verification, and revocation | `src/`, `digital-credentials-workspace/` |
+| Build on CKB | Custom Rust Type Script and CCC integration | contract source and OffCKB commands |
+| Protect identity | Salted identity commitment; raw student ID and salt omitted from public record | credential privacy tests |
+| Verify document integrity | SHA-256 certificate comparison | original/modified-document tests |
+| Authenticate issuer | Ed25519 signature, trusted issuer registry, CKB Lock Script hash | signature and trust tests |
+| Support revocation | Signed event plus 75-byte Cell state | Node.js and Rust implementation |
+| Enforce per-lineage state | Only issuer-owned `ACTIVE → REVOKED` update is accepted | Rust policy and tests |
+| Prevent ordinary duplicates | Issuer client refuses an existing live matching record | `createActiveRecord` guard |
+| Detect protocol conflicts | Public inspector returns duplicate/malformed conflicts | inspector and record tests |
+| Public verification | No-private-key CLI, web interface, and HTTP API | `credential:inspect`, `inspector:serve` |
+| Export evidence | Canonical proof JSON and proof digest | proof export and verifier tests |
+| Reproducible local workflow | Environment checks, build, test, deploy, lifecycle | scripts and sanitized evidence |
 
-## Verified totals
+## Real community contribution
 
-- Node.js tests: **11/11 passed**
-- Rust unit tests: **2/2 passed**
-- Rust integration tests: **11/11 passed**
-- Final local-chain state: **REVOKED**
+| Contribution | Reusable result | Verification |
+|---|---|---|
+| Open binary specification | `docs/CREDENTIAL_CELL_DATA_FORMAT.md` | field layout and canonical rules |
+| Standalone decoder | `community/decoder/credential-cell-decoder.js` | no dependency, wallet, key, or RPC |
+| Cross-language corpus | six deterministic valid/invalid vectors | `npm run test:vectors` |
+| Decoder CLI/API | raw Cell data can be decoded independently | `cell:decode`, `/api/decode-cell` |
+| Proof verifier CLI/API | detects proof modification and public-data leakage | `proof:verify`, `/api/verify-proof` |
+| Contribution process | issue forms, PR template, contribution guide | `.github/`, `CONTRIBUTING.md` |
+| Upstream preparation | safe transaction-visualizer decoder proposal | `docs/CKB_VIZ_DECODER_PROPOSAL.md` |
+
+## Handbook compliance evidence
+
+| Handbook requirement | Repository support | Current evidence status |
+|---|---|---|
+| Weekly contemporaneous GitHub report | evidence-first report templates | participant must publish personally each week |
+| Course/module completion and scores | `learning/academy/` structure | not yet recorded |
+| CCC Playground work | dedicated evidence directory | not yet recorded |
+| Screenshots for practical work | screenshots and evidence folders | capstone evidence exists; course evidence still needed |
+| Developer environment | automated local environment and OffCKB setup | substantially evidenced |
+| Capstone application | working prototype and community package | implemented; public feedback still needed |
+
+See `HANDBOOK_PROGRESS.md`. Do not mark missing course work as completed based only on capstone code.
+
+## Test inventory after v2.1 changes
+
+- JavaScript: **61 test cases**; current packaging run: **60 passed, 1 CCC test skipped, 0 failed**.
+- Rust contract: **5 unit tests** and **18 `ckb-testtool` integration tests** in source.
+- Community conformance: **6 vectors**, checked by two independent JavaScript decoders.
+
+The new Rust binary must be rebuilt and the local lifecycle rerun before publishing new deployment evidence.

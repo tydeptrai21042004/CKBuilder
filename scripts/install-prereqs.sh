@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cat <<'TEXT'
-Required software for the full local Level-2 check:
+Required software for the full local CKB capstone check:
 
 1. Node.js 20+ and npm
 2. Rust stable through rustup

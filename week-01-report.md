@@ -5,7 +5,7 @@
 
 ## Summary
 
-This week, I built and tested a local CKB application for issuing and revoking academic credentials. The project uses a Node.js application for credential creation and verification, together with a Rust CKB Type Script that enforces an irreversible `ACTIVE → REVOKED` state transition.
+This week, I built and tested a local CKB application for issuing and revoking academic credentials. The project uses a Node.js application for credential creation and verification, together with a Rust CKB Type Script that enforces a per-Cell irreversible `ACTIVE → REVOKED` state transition.
 
 ## What I Learned
 

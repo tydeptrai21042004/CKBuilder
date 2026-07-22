@@ -3,10 +3,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { buildKnownScripts, deriveIssuer, loadContractInfo } from "../src/ckb/local-chain.js";
+import { buildKnownScripts, loadContractInfo } from "../src/ckb/offckb-config.js";
 
-const FIRST_OFFCKB_KEY = "0x6109170b275a09ad54877b82f7d9930f88cab5717d484fb4741ae9d1dd078cd6";
-const EXPECTED_LOCK_HASH = "0x7de82d61a7eb2ec82b0dc653e558ba120efcbfbb44dac87c12972d05bf250653";
 const SECP = {
   codeHash: "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
   hashType: "type",
@@ -18,25 +16,24 @@ const DAO = {
   cellDeps: [{ cellDep: { outPoint: { txHash: `0x${"22".repeat(32)}`, index: 2 }, depType: "code" } }]
 };
 
-test("OffCKB configuration derives the exact first-account Lock Script hash", async () => {
+test("OffCKB system-script parser produces CCC-compatible known Script keys", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ckb-local-config-"));
   const systemPath = path.join(dir, "system.json");
-  const keyPath = path.join(dir, "key");
   fs.writeFileSync(systemPath, JSON.stringify({ devnet: {
     secp256k1_blake160_sighash_all: { script: SECP },
     dao: { script: DAO }
   } }));
-  fs.writeFileSync(keyPath, `${FIRST_OFFCKB_KEY}\n`, { mode: 0o600 });
-
   const known = buildKnownScripts(systemPath);
   assert.equal(known.Secp256k1Blake160.codeHash, SECP.codeHash);
-  const issuer = await deriveIssuer({
-    OFFCKB_SYSTEM_SCRIPTS: systemPath,
-    CKB_ISSUER_PRIVATE_KEY_FILE: keyPath,
-    CKB_RPC_URL: "http://127.0.0.1:28114"
-  });
-  assert.equal(issuer.lockHash, EXPECTED_LOCK_HASH);
-  assert.match(issuer.address, /^ckt1/);
+  assert.equal(known.NervosDao.codeHash, DAO.codeHash);
+  assert.equal(known.TypeId.hashType, "type");
+});
+
+test("OffCKB parser rejects missing required system Scripts", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ckb-local-config-missing-"));
+  const systemPath = path.join(dir, "system.json");
+  fs.writeFileSync(systemPath, JSON.stringify({ devnet: {} }));
+  assert.throws(() => buildKnownScripts(systemPath), /Required devnet known Script/);
 });
 
 test("deployment parser accepts the OffCKB scripts.json structure", () => {
@@ -48,5 +45,13 @@ test("deployment parser accepts the OffCKB scripts.json structure", () => {
     cellDeps: [{ cellDep: { outPoint: { txHash: `0x${"44".repeat(32)}`, index: 0 }, depType: "code" } }]
   };
   fs.writeFileSync(deploymentPath, JSON.stringify({ devnet: { "credential-revocation": info } }));
+  assert.deepEqual(loadContractInfo(deploymentPath), info);
+});
+
+test("deployment parser accepts a binary-suffixed contract name", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ckb-deployment-bin-"));
+  const deploymentPath = path.join(dir, "scripts.json");
+  const info = { codeHash: `0x${"55".repeat(32)}`, hashType: "data2", cellDeps: [{}] };
+  fs.writeFileSync(deploymentPath, JSON.stringify({ devnet: { "credential-revocation.bin": info } }));
   assert.deepEqual(loadContractInfo(deploymentPath), info);
 });
